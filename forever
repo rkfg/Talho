@@ -1,0 +1,3 @@
+#!/bin/sh
+while [ 1 ]; do python talho.py; sleep 3; done
+

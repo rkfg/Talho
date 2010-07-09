@@ -1,0 +1,62 @@
+# compile it with msgfmt talho.po -o talho.mo
+# and put talho.mo to /usr/share/locale/ru/LC_MESSAGES
+# or wherever your *.mo files are located.
+
+msgid "MODULE: %s not found"
+msgstr "МОДУЛЬ: %s не найден"
+
+msgid "MODULE: can't load %s"
+msgstr "МОДУЛЬ: невозможно загрузить %s"
+
+msgid "MODULE: %s loaded"
+msgstr "МОДУЛЬ: %s загружен"
+
+msgid "MODULE: can't remove %s"
+msgstr "МОДУЛЬ: невозможно выгрузить %s"
+
+msgid "MODULE: %s not loaded"
+msgstr "МОДУЛЬ: %s не загружен"
+
+msgid "MODULE: %s removed"
+msgstr "МОДУЛЬ: %s удалён"
+
+msgid "now playing track #%s"
+msgstr "сейчас играет трек №%s"
+
+msgid "random started, next track is playing."
+msgstr "запущен рандом, включен следующий трек."
+
+msgid "track #%s started."
+msgstr "запущен трек №%s."
+
+msgid "unknown fucking shit happened."
+msgstr "случилась НЁХ."
+
+msgid "too many items in query, maximum 20 allowed."
+msgstr "слишком много строчек, максимум 20."
+
+msgid "done."
+msgstr "готово."
+
+msgid "I'm already in this room."
+msgstr "я и так в этой комнате."
+
+msgid "I'm not in that room."
+msgstr "меня нет в той комнате."
+
+#msgid ""
+#msgstr ""
+
+#msgid ""
+#msgstr ""
+
+#msgid ""
+#msgstr ""
+
+#msgid ""
+#msgstr ""
+
+#msgid ""
+#msgstr ""
+
+

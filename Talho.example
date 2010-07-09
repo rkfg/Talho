@@ -1,0 +1,72 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+###############################################
+# C.C. - jabber bot
+# Copyright (C) 2008 anonymous
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+###############################################
+
+import sys
+import os
+import signal
+os.chdir(sys.path[0])
+
+from jabberbot import JabberBot
+
+# Settings {{{
+user  = ( u'talho@radioanon.ru', u'password', u'Talho' ) # jid, pass, nick
+rooms = { u'radiochan@conference.jabber.ru': ('', 10), u'radiochan@conference.radioanon.ru': ('', 10), u'jabrach@conference.jabber.ru': ('', 9) } # conference jid : (nick, conference default level)
+usersjid = { u'eurekafag@eureka7.ru' : 0 } # admin's jid
+usersnick = { u'eurekafag' : 0, u'abappеl' : 1, u'anonmax' : 1 } # nick : level
+#}}}
+
+def handle_pdb(sig, frame):
+    import pdb
+    pdb.set_trace()
+
+def main(): #{{{
+    signal.signal(signal.SIGUSR1, handle_pdb)
+    bot = JabberBot(user, rooms, usersjid, usersnick, logfile)
+    bot.load()
+    bot.process()
+#}}}
+
+def help(): #{{{
+    help = ('Usage: %s [-d|-h|--help]' %sys.argv[0]) +\
+            '\n\n' +\
+            '-d         daemon\n' +\
+            '-h, --help help'
+    print(help)
+    sys.exit(1)
+#}}}
+
+logfile = '/dev/stdout'
+if len(sys.argv) > 1:
+    if sys.argv[1] == '-h' or sys.argv[1] == '--help':
+        help()
+
+    elif sys.argv[1] == '-d':
+        logfile = 'bot.log'
+
+        pid = os.fork()
+        if pid == 0:
+            os.setsid()
+            pid = os.fork()
+            if pid == 0:
+                main()
+    else:
+        help()
+else:
+    main()
