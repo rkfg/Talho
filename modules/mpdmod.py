@@ -4,11 +4,15 @@ import mpd
 import base64
 import urllib
 import socket
-
+import cookielib
+import urllib2
+import re
+ 
 from misc import _
 
 mpd_password = "mpdpassword" # set this to mpd pass
 icecast_admin = ("admin", "adminpassword") # set this to admin pass
+vk_acc = ("vk_login@vkontakte.ru", "vkontakte_password")
 
 class IcecastAdminOpener(urllib.FancyURLopener):
     def prompt_user_passwd(self, host, realm):
@@ -99,6 +103,28 @@ def set_tag(client, *args):
         return _("new track name is '%s'.") % song_name
     except:
         return _("unknown fucking shit happened.")
+
+def add_vk(client, *args):
+    if not args:
+        return
+
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+
+    req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc)
+    handle = opener.open(req)
+
+    req = urllib2.Request("http://vkontakte.ru/gsearch.php?q=%s&section=audio" % "%20".join(args).encode("utf-8"))
+    handle = opener.open(req)
+    result = handle.read().decode("cp1251")
+
+    match = re.search(ur"operate\((\d+),(\d+),(\d+),'([^']+)'", result)
+    if match:
+        link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
+        id = client.addid(link)
+	client.playid(id)
+        return _("found and started new track #%s") % id
+    else:
+        return _("nothing found.")
     
 commands = { u'shuffle' : shuffle,
              u'sh' : shuffle,
@@ -134,7 +160,9 @@ commands = { u'shuffle' : shuffle,
              u'ефп': set_tag,
              u'е': set_tag,
 	     u'тег': set_tag,
-	     u'т': set_tag
+	     u'т': set_tag,
+	     u'v': add_vk,
+	     u'в': add_vk
           }
 
 def main(bot, args):
@@ -144,7 +172,8 @@ play, p <number> — запускает проигрывание трека но
 list, ls, l [first] [last] — показывает список треков с [first] по [last]
 se, search <query> — находит треки и выводит их с соответсвующими номерами (можно использовать для команды play)
 mi, mounts — выдаёт список занятых диджейских маунтов, чтобы было проще определить свободный
-t, tag <name> — установить название текущего трека в <name>'''
+t, tag <name> — установить название текущего трека в <name>
+v, в <song and artist name> — ищет вконтактике и стартует указанную песню'''
     client = mpd.MPDClient()
     try:
         client.connect(host="127.0.0.1", port="6600")
