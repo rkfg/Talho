@@ -112,8 +112,10 @@ def add_vk(client, *args):
 
     req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc)
     handle = opener.open(req)
+    req_args = urllib.urlencode({ "q" : " ".join(args).encode("utf-8"), "section" : "audio" })
 
-    req = urllib2.Request("http://vkontakte.ru/gsearch.php?q=%s&section=audio" % "%20".join(args).encode("utf-8"))
+    req = urllib2.Request("http://vkontakte.ru/gsearch.php?" + req_args)
+
     handle = opener.open(req)
     result = handle.read().decode("cp1251")
 
