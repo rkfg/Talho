@@ -7,6 +7,7 @@ import socket
 import cookielib
 import urllib2
 import re
+import datetime
  
 from misc import _
 
@@ -121,10 +122,20 @@ def add_vk(client, *args):
 
     match = re.search(ur"operate\((\d+),(\d+),(\d+),'([^']+)'", result)
     if match:
+        time = re.search(ur"<div class=\"duration\">([0-9:]+)<\/div>", result)
         link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
         id = client.addid(link)
 	client.playid(id)
-        return _("found and started new track #%s") % id
+	if time:
+	    time = time.group(1)
+            now = datetime.datetime.now()
+            duration = datetime.datetime.strptime(time, "%M:%S")
+            finish = (now + datetime.timedelta(hours = duration.hour, minutes = duration.minute, seconds = duration.second)).strftime("%H:%M:%S")
+	else:
+	    time = _("unknown")
+	    finish = _("unknown")
+
+        return _("found and started new track #%s, duration is: %s will finish at: %s") % (id, time, finish)
     else:
         return _("nothing found.")
     
