@@ -109,35 +109,43 @@ def add_vk(client, *args):
     if not args:
         return
 
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+    try:
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
-    req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc)
-    handle = opener.open(req)
-    req_args = urllib.urlencode({ "q" : " ".join(args).encode("utf-8"), "section" : "audio" })
+        req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc)
+        handle = opener.open(req)
+        req_args = urllib.urlencode({ "q" : " ".join(args).encode("utf-8"), "section" : "audio" })
 
-    req = urllib2.Request("http://vkontakte.ru/gsearch.php?" + req_args)
+        req = urllib2.Request("http://vkontakte.ru/gsearch.php?" + req_args)
 
-    handle = opener.open(req)
-    result = handle.read().decode("cp1251")
+        handle = opener.open(req)
+        result = handle.read().decode("cp1251")
 
-    match = re.search(ur"operate\((\d+),(\d+),(\d+),'([^']+)'", result)
-    if match:
-        time = re.search(ur"<div class=\"duration\">([0-9:]+)<\/div>", result)
-        link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
-        id = client.addid(link)
-	client.playid(id)
-	if time:
-	    time = time.group(1)
-            now = datetime.datetime.now()
-            duration = datetime.datetime.strptime(time, "%M:%S")
-            finish = (now + datetime.timedelta(hours = duration.hour, minutes = duration.minute, seconds = duration.second)).strftime("%H:%M:%S")
-	else:
-	    time = _("unknown")
-	    finish = _("unknown")
+        match = re.search(ur"onclick=\"return operate\((\d+),(\d+),(\d+),'([^']+)'", result)
+        if match:
+            time = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
+            link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
+            id = client.addid(link)
+            client.playid(id)
+	    title = re.search(ur"<b id=\"performer\d+\">([^<]+)</b><span>&nbsp;-&nbsp;</span><span id=\"title\d+\">([^<]+)</span>", result)
+            metadata_opener = IcecastAdminOpener()
+            update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : title.group(1).encode("utf-8"), "artist" : title.group(2).encode("utf-8") })
+            metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
 
-        return _("found and started new track #%s, duration is: %s will finish at: %s") % (id, time, finish)
-    else:
-        return _("nothing found.")
+            if time:
+                time = time.group(1)
+                now = datetime.datetime.now()
+                duration = datetime.datetime.strptime(time, "%M:%S")
+                finish = (now + datetime.timedelta(hours = duration.hour, minutes = duration.minute, seconds = duration.second)).strftime("%H:%M:%S")
+            else:
+                time = _("unknown")
+                finish = _("unknown")
+
+            return _("found and started new track #%s, duration is: %s will finish at: %s") % (id, time, finish)
+        else:
+            return _("nothing found.")
+    except urllib2.URLError:
+        return _("network error")
     
 commands = { u'shuffle' : shuffle,
              u'sh' : shuffle,
