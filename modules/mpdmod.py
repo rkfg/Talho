@@ -8,6 +8,7 @@ import cookielib
 import urllib2
 import re
 import datetime
+import time
  
 from misc import _
 
@@ -123,25 +124,26 @@ def add_vk(client, *args):
 
         match = re.search(ur"onclick=\"return operate\((\d+),(\d+),(\d+),'([^']+)'", result)
         if match:
-            time = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
+            playtime = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
             link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
             id = client.addid(link)
             client.playid(id)
+	    time.sleep(1)
 	    title = re.search(ur"<b id=\"performer\d+\">([^<]+)</b><span>&nbsp;-&nbsp;</span><span id=\"title\d+\">([^<]+)</span>", result)
             metadata_opener = IcecastAdminOpener()
-            update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : title.group(1).encode("utf-8"), "artist" : title.group(2).encode("utf-8") })
+            update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : "[" + title.group(1).encode("utf-8") + "]" + " — " + title.group(2).encode("utf-8") })
             metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
 
-            if time:
-                time = time.group(1)
+            if playtime:
+                playtime = playtime.group(1)
                 now = datetime.datetime.now()
-                duration = datetime.datetime.strptime(time, "%M:%S")
+                duration = datetime.datetime.strptime(playtime, "%M:%S")
                 finish = (now + datetime.timedelta(hours = duration.hour, minutes = duration.minute, seconds = duration.second)).strftime("%H:%M:%S")
             else:
-                time = _("unknown")
+                playtime = _("unknown")
                 finish = _("unknown")
 
-            return _("found and started new track #%s, duration is: %s will finish at: %s") % (id, time, finish)
+            return _("found and started new track #%s, duration is: %s will finish at: %s") % (id, playtime, finish)
         else:
             return _("nothing found.")
     except urllib2.URLError:
