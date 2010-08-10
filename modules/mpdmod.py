@@ -127,12 +127,13 @@ def add_vk(client, *args):
             playtime = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
             link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
             id = client.addid(link)
-            client.playid(id)
-	    time.sleep(1)
-	    title = re.search(ur"<b id=\"performer\d+\">([^<]+)</b><span>&nbsp;-&nbsp;</span><span id=\"title\d+\">([^<]+)</span>", result)
-            metadata_opener = IcecastAdminOpener()
-            update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : "[" + title.group(1).encode("utf-8") + "]" + " — " + title.group(2).encode("utf-8") })
-            metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
+	    position = int(client.status()['playlistlength']) - 1
+            #client.playid(id)
+	    #time.sleep(3)
+	    #title = re.search(ur"<b id=\"performer\d+\">([^<]+)</b><span>&nbsp;-&nbsp;</span><span id=\"title\d+\">([^<]+)</span>", result)
+            #metadata_opener = IcecastAdminOpener()
+            #update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : "[" + title.group(1).encode("utf-8") + "]" + " — " + title.group(2).encode("utf-8") })
+            #metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
 
             if playtime:
                 playtime = playtime.group(1)
@@ -143,12 +144,22 @@ def add_vk(client, *args):
                 playtime = _("unknown")
                 finish = _("unknown")
 
-            return _("found and started new track #%s, duration is: %s will finish at: %s") % (id, playtime, finish)
+            #return _("found new track #%s, duration is: %s will finish at: %s") % (id, playtime, finish)
+            return _("found new track #%s, duration is: %s") % (position, playtime)
         else:
             return _("nothing found.")
     except urllib2.URLError:
         return _("network error")
-    
+
+def delete_pos(client, *args):
+    if not args:
+        print "Need an argument"
+    try:
+        client.delete(int(args[0]))
+        return _("removed track #%s from playlist") % args
+    except:
+        return _("FUCK YOU. I mean, error.")    
+
 commands = { u'shuffle' : shuffle,
              u'sh' : shuffle,
 	     u'ш': shuffle,
@@ -185,7 +196,8 @@ commands = { u'shuffle' : shuffle,
 	     u'тег': set_tag,
 	     u'т': set_tag,
 	     u'v': add_vk,
-	     u'в': add_vk
+	     u'в': add_vk,
+	     u'd': delete_pos,
           }
 
 def main(bot, args):
@@ -196,7 +208,7 @@ list, ls, l [first] [last] — показывает список треков с
 se, search <query> — находит треки и выводит их с соответсвующими номерами (можно использовать для команды play)
 mi, mounts — выдаёт список занятых диджейских маунтов, чтобы было проще определить свободный
 t, tag <name> — установить название текущего трека в <name>
-v, в <song and artist name> — ищет вконтактике и стартует указанную песню'''
+v, в <song and artist name> — ищет вконтактике и добавляет указанную песню'''
     client = mpd.MPDClient()
     try:
         client.connect(host="127.0.0.1", port="6600")
