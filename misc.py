@@ -33,7 +33,7 @@ def readUrl(url, cookies=None): #{{{
 	if str(r.status)[0] != '2':
 	    return None
 
-	if not r.getheader('Content-type').startswith('text/html'):
+	if not r.getheader('Content-type').startswith('text/'):
 	    return None
 
     try:
