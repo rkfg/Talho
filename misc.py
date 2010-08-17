@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import urllib2
 import re
 from lxml import etree
 import socket
 import gettext
 import chardet
+import httplib
 
 headers = {}
 headers['User-Agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB;'+\
@@ -22,6 +25,17 @@ def force_unicode(string, encoding='utf-8'): #{{{
 #}}}
 
 def readUrl(url, cookies=None): #{{{
+    parsedurl = re.search('http://([^/]+)/?(.*)', url)
+    if parsedurl and len(parsedurl.groups()) > 0:
+        c = httplib.HTTPConnection(parsedurl.group(1))
+	c.request('HEAD', '/' + parsedurl.group(2))
+	r = c.getresponse()
+	if str(r.status)[0] != '2':
+	    return None
+
+	if not r.getheader('Content-type').startswith('text/html'):
+	    return None
+
     try:
         if url.startswith('http://vkontakte.ru') or url.startswith('http://www.vkontakte.ru'):
             headers['Cookie'] = vkontakte_cookies

@@ -130,7 +130,11 @@ def add_vk(client, *args):
 	    position = int(client.status()['playlistlength']) - 1
             #client.playid(id)
 	    #time.sleep(3)
-	    #title = re.search(ur"<b id=\"performer\d+\">([^<]+)</b><span>&nbsp;-&nbsp;</span><span id=\"title\d+\">([^<]+)</span>", result)
+	    title = re.search(ur"<b id=\"performer\d+\">([^<]+)</b><span>&nbsp;-&nbsp;</span><span id=\"title\d+\">([^<]+)</span>", result)
+	    if title:
+	        title = title.group(1) + u" — " + title.group(2)
+            else:
+	        title = _("no title")
             #metadata_opener = IcecastAdminOpener()
             #update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : "[" + title.group(1).encode("utf-8") + "]" + " — " + title.group(2).encode("utf-8") })
             #metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
@@ -145,7 +149,7 @@ def add_vk(client, *args):
                 finish = _("unknown")
 
             #return _("found new track #%s, duration is: %s will finish at: %s") % (id, playtime, finish)
-            return _("found new track #%s, duration is: %s") % (position, playtime)
+            return _("found new track #%s named \"%s\", duration is: %s") % (position, title, playtime)
         else:
             return _("nothing found.")
     except urllib2.URLError:
@@ -155,6 +159,8 @@ def delete_pos(client, *args):
     if not args:
         print "Need an argument"
     try:
+        if int(args[0]) < 3:
+	    return _("track is protected.")
         client.delete(int(args[0]))
         return _("removed track #%s from playlist") % args
     except:
