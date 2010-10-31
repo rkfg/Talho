@@ -45,7 +45,7 @@ class JabberBot:
         self.last = datetime.datetime(1, 1, 1)
         self.plaintext_dispatchers = {}
 
-        socket.setdefaulttimeout(5)
+        socket.setdefaulttimeout(15)
 
         logging.basicConfig(level=logging.DEBUG, filename=logfile, format='[%(asctime)s] [%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     #}}}

@@ -39,6 +39,8 @@ def play(client, *args):
     
 def fancy_tracks(tracks):
     result = "\n"
+    if not tracks:
+        return _("nothing found.")
     for track in tracks:
         result += track["pos"] + ". "
         title = ""
@@ -75,7 +77,7 @@ def track_list(client, *args):
 def track_search(client, *args):
     if not args:
         return
-    result = client.playlistsearch("any", " ".join(args))
+    result = client.playlistsearch("any", " ".join(args))[:20]
     return fancy_tracks(result)
 
 def mounts_info(client, *args):
@@ -98,7 +100,7 @@ def set_tag(client, *args):
     if not args:
         return
     try:
-        song_name = " ".join(args)
+        song_name = " ".join(args)[:100]
         metadata_opener = IcecastAdminOpener()
         update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : song_name.encode("utf-8") })
         metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
@@ -126,7 +128,7 @@ def add_vk(client, *args):
         if match:
             playtime = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
             link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
-            id = client.addid(link)
+            id = client.addid("http://127.0.0.1:8080/" + "+".join(args))
 	    position = int(client.status()['playlistlength']) - 1
             #client.playid(id)
 	    #time.sleep(3)
@@ -152,6 +154,7 @@ def add_vk(client, *args):
             return _("found new track #%s named \"%s\", duration is: %s") % (position, title, playtime)
         else:
             return _("nothing found.")
+    #except ValueError:
     except urllib2.URLError:
         return _("network error")
 
@@ -214,15 +217,16 @@ list, ls, l [first] [last] — показывает список треков с
 se, search <query> — находит треки и выводит их с соответсвующими номерами (можно использовать для команды play)
 mi, mounts — выдаёт список занятых диджейских маунтов, чтобы было проще определить свободный
 t, tag <name> — установить название текущего трека в <name>
-v, в <song and artist name> — ищет вконтактике и добавляет указанную песню'''
+v, в <song and artist name> — ищет вконтактике и добавляет указанную песню
+d <number> — удаляет трек номер <number> (первые три защищены)'''
     client = mpd.MPDClient()
     try:
         client.connect(host="127.0.0.1", port="6600")
-    except SocketError:
+    except mpd.SocketError:
         return "ошибка соединения!"
     try:
         client.password(mpd_password)
-    except CommandError:
+    except mpd.CommandError:
         client.disconnect()
         return "неверный пароль!"
 

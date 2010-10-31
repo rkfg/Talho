@@ -3,6 +3,7 @@
 import urllib
 import re
 import misc
+from misc import _
 from simplejson import loads
 
 def main(bot, args):
@@ -42,8 +43,11 @@ y - youtube.com'''
 
 def google(query):
     query = urllib.quote(query.encode('utf-8'))
-    data = misc.readUrl('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&hl=ru' %query)
-    if not data: return 'can\'t get data'
+    try:
+        data = misc.readUrl('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&hl=ru' %query)
+        if not data: return 'can\'t get data'
+    except:
+        return _("google is not available, sorry.")
 
     try:
         convert = loads(data)
