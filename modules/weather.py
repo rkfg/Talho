@@ -52,7 +52,7 @@ def main(bot, args):
     except IndexError:
         return _("error getting weather.")
 
-    return _("weather for %s at %s: Temperature: %s°C, %s, Wind speed: %s m/sec, Wind direction: %s" ) % (cityname, cc_lsup.replace(" Local Time", ""), cc_tmp, cc_t, wind_s, wind_t)
+    return _(u"weather for %s at %s: Temperature: %s°C, %s, Wind speed: %s m/sec, Wind direction: %s" ) % (cityname, cc_lsup.replace(" Local Time", ""), cc_tmp, cc_t, wind_s, wind_t)
 
     
 def info(bot):

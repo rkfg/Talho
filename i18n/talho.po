@@ -2,61 +2,171 @@
 # and put talho.mo to /usr/share/locale/ru/LC_MESSAGES
 # or wherever your *.mo files are located.
 
+# Copyright (C) 2011 eurekafag
+# This file is distributed under the same license as the Talho package.
+# eurekafag <eurekafag@eureka7.ru>, 2009-2011.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: eurekafag@eureka7.ru\n"
+"POT-Creation-Date: 2011-01-09 01:06+0300\n"
+"PO-Revision-Date: 2011-01-09 01:58+0300\n"
+"Last-Translator: eurekafag <eurekafag@eureka7.ru>\n"
+"Language-Team: Russian <eurekafag@eureka7.ru>\n"
+"Language: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: jabberbot.py:76
+#, python-format
 msgid "MODULE: %s not found"
 msgstr "МОДУЛЬ: %s не найден"
 
+#: jabberbot.py:83
+#, python-format
 msgid "MODULE: can't load %s"
 msgstr "МОДУЛЬ: невозможно загрузить %s"
 
+#: jabberbot.py:94
+#, python-format
 msgid "MODULE: %s loaded"
 msgstr "МОДУЛЬ: %s загружен"
 
+#: jabberbot.py:105
+#, python-format
 msgid "MODULE: can't remove %s"
 msgstr "МОДУЛЬ: невозможно выгрузить %s"
 
+#: jabberbot.py:110
+#, python-format
 msgid "MODULE: %s not loaded"
 msgstr "МОДУЛЬ: %s не загружен"
 
+#: jabberbot.py:112
+#, python-format
 msgid "MODULE: %s removed"
 msgstr "МОДУЛЬ: %s удалён"
 
+#: modules/mpdmod.py:290
+#, python-format
 msgid "now playing track #%s"
 msgstr "сейчас играет трек №%s"
 
+#: modules/mpdmod.py:45
 msgid "random started, next track is playing."
 msgstr "запущен рандом, включен следующий трек."
 
+#: modules/mpdmod.py:58
+#, python-format
 msgid "track #%s started."
 msgstr "запущен трек №%s."
 
+#: modules/mpdmod.py:60 modules/mpdmod.py:119 modules/mpdmod.py:135
 msgid "unknown fucking shit happened."
 msgstr "случилась НЁХ."
 
+#: modules/mpdmod.py:93
 msgid "too many items in query, maximum 20 allowed."
 msgstr "слишком много строчек, максимум 20."
 
+#: modules/join.py:15 modules/leave.py:13
 msgid "done."
 msgstr "готово."
 
+#: modules/join.py:17
 msgid "I'm already in this room."
 msgstr "я и так в этой комнате."
 
+#: modules/leave.py:15
 msgid "I'm not in that room."
 msgstr "меня нет в той комнате."
 
-#msgid ""
-#msgstr ""
+#: modules/g.py:50 modules/tr.py:21
+msgid "google is not available, sorry."
+msgstr "гугл недоступен, простите."
 
-#msgid ""
-#msgstr ""
+#: modules/mpdmod.py:28
+#, python-format
+msgid "mpd control is blocked, %s left"
+msgstr "управление mpd заблокировано, осталось %s"
 
-#msgid ""
-#msgstr ""
+#: modules/mpdmod.py:40
+msgid "random was switched off."
+msgstr "рандом был отключен."
 
-#msgid ""
-#msgstr ""
+#: modules/mpdmod.py:65 modules/mpdmod.py:183
+msgid "nothing found."
+msgstr "ничего не найдено."
 
-#msgid ""
-#msgstr ""
+#: modules/mpdmod.py:133
+#, python-format
+msgid "new track name is '%s'."
+msgstr "новое название трека '%s'."
 
+#: modules/mpdmod.py:166
+msgid "no title"
+msgstr "нет заголовка"
 
+#: modules/mpdmod.py:177 modules/mpdmod.py:178
+msgid "unknown"
+msgstr "неизвестно"
+
+#: modules/mpdmod.py:181
+#, python-format
+msgid "found new track #%s named \"%s\", duration is: %s"
+msgstr "найден новый трек #%s с именем \"%s\", длительность: %s"
+
+#: modules/mpdmod.py:186
+msgid "network error"
+msgstr "сетевая ошибка"
+
+#: modules/mpdmod.py:193 modules/mpdmod.py:203
+msgid "track is protected."
+msgstr "трек защищён."
+
+#: modules/mpdmod.py:195
+#, python-format
+msgid "removed track #%s from playlist"
+msgstr "трек #%s удалён из плейлиста"
+
+#: modules/mpdmod.py:197
+msgid "FUCK YOU. I mean, error."
+msgstr "МАТЬ МОЯ ЖЕНЩИНА. В смысле, ошибка."
+
+#: modules/mpdmod.py:206
+#, python-format
+msgid "moved track #%d to #%d."
+msgstr "трек #%d перемещён на #%d."
+
+#: modules/mpdmod.py:286
+msgid "unknown command"
+msgstr "неизвестная команда"
+
+#: modules/news.py:13
+msgid "dropped cache."
+msgstr "кэш сброшен."
+
+#: modules/weather.py:29 modules/weather.py:36 ../modules/weather.py:29
+#: ../modules/weather.py:36
+msgid "city not found."
+msgstr "город не найден."
+
+#: modules/weather.py:53 ../modules/weather.py:53
+msgid "error getting weather."
+msgstr "ошибка получения погоды."
+
+#: modules/weather.py:55 ../modules/weather.py:55
+#, python-format
+msgid ""
+"weather for %s at %s: Temperature: %s°C, %s, Wind speed: %s m/sec, Wind "
+"direction: %s"
+msgstr ""
+"погода для %s на %s: Температура: %s°C, %s, Скорость ветра: %s м/сек, "
+"Направление ветра: %s"
+
+#: modules/bh.py:29
+msgid "set."
+msgstr "установлено."

@@ -26,7 +26,7 @@ def main(bot, args):
     bhpage.write('<?php echo "<b><span style=\\"background-color: #333; color: #%02x%02x00; padding: 3px; border: 1px #eee dashed;\\">%d%%</span></b>"; ?>' % (r, g, bhlev))
     bhpage.close()
 
-    return _("установлено.")
+    return _("set.")
         
 def info(bot):
     return ((u"bh", u"бх"), 9, main)
