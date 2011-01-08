@@ -6,7 +6,11 @@ import urllib, urllib2
 from misc import _
 
 def kmhtomsec(speed):
-    return str(int(float(speed) * 1000.0 / 3600.0))
+    try:
+        speed = int(float(speed) * 1000.0 / 3600.0)
+    except:
+        speed = 0
+    return str(speed)
 
 def main(bot, args):
     '''Weather in the given city'''

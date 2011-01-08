@@ -12,6 +12,8 @@ import time
  
 from misc import _
 
+globalbot = None
+
 mpd_password = "mpdpassword" # set this to mpd pass
 icecast_admin = ("admin", "adminpassword") # set this to admin pass
 vk_acc = ("vk_login@vkontakte.ru", "vkontakte_password")
@@ -20,13 +22,33 @@ class IcecastAdminOpener(urllib.FancyURLopener):
     def prompt_user_passwd(self, host, realm):
         return icecast_admin
 
+def check_block():
+    global globalbot
+    if hasattr(globalbot, "block_time") and datetime.datetime.now() < globalbot.block_time:
+        return _("mpd control is blocked, %s left") % (globalbot.block_time - datetime.datetime.now())
+    else:
+        return None
+
 def shuffle(client, *args):
-    client.random(1)
-    client.next()
     
-    return _("random started, next track is playing.")
+    msg = check_block()
+    if msg:
+        return msg
+
+    if len(args) > 0 and args[0] == 'off':
+        client.random(0)
+        return _("random was switched off.")
+    else:
+        client.random(1)
+        client.next()
+    
+        return _("random started, next track is playing.")
 
 def play(client, *args):
+    msg = check_block()
+    if msg:
+        return msg
+
     if len(args) != 1:
         return
     try:
@@ -100,6 +122,10 @@ def set_tag(client, *args):
     if not args:
         return
     try:
+        msg = check_block()
+        if msg:
+            return msg
+
         song_name = " ".join(args)[:100]
         metadata_opener = IcecastAdminOpener()
         update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : song_name.encode("utf-8") })
@@ -129,6 +155,7 @@ def add_vk(client, *args):
             playtime = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
             link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
             id = client.addid("http://127.0.0.1:8080/" + "+".join(args))
+	    #client.moveid(id, 100)
 	    position = int(client.status()['playlistlength']) - 1
             #client.playid(id)
 	    #time.sleep(3)
@@ -144,8 +171,8 @@ def add_vk(client, *args):
             if playtime:
                 playtime = playtime.group(1)
                 now = datetime.datetime.now()
-                duration = datetime.datetime.strptime(playtime, "%M:%S")
-                finish = (now + datetime.timedelta(hours = duration.hour, minutes = duration.minute, seconds = duration.second)).strftime("%H:%M:%S")
+                #duration = datetime.datetime.strptime(playtime, "%M:%S")
+                #finish = (now + datetime.timedelta(hours = duration.hour, minutes = duration.minute, seconds = duration.second)).strftime("%H:%M:%S")
             else:
                 playtime = _("unknown")
                 finish = _("unknown")
@@ -168,6 +195,17 @@ def delete_pos(client, *args):
         return _("removed track #%s from playlist") % args
     except:
         return _("FUCK YOU. I mean, error.")    
+
+def set_next(client, *args):
+    try:
+        num = int(args[0])
+	if num < 3:
+	    return _("track is protected.")
+	to = int(client.status()['playlistlength']) - 1
+	client.move(num, to)
+	return _("moved track #%d to #%d.") % (num, to)
+    except:
+        return
 
 commands = { u'shuffle' : shuffle,
              u'sh' : shuffle,
@@ -207,23 +245,30 @@ commands = { u'shuffle' : shuffle,
 	     u'v': add_vk,
 	     u'в': add_vk,
 	     u'd': delete_pos,
+	     u'n' : set_next,
+	     u'next' : set_next,
           }
 
 def main(bot, args):
     '''Управление MPD. Команды:
-shuffle, sh — включает режим рандомного проигрывания и пускает следующий трек
+shuffle, sh — включает режим рандомного проигрывания и пускает следующий трек. С параметром off отключает рандом, что даёт возможность набивать треки в очередь и вести эфир из диджейки.
 play, p <number> — запускает проигрывание трека номер <number> (0 — маунт first, 1 — маунт second, 2 - запись помех, далее рандомные треки)
 list, ls, l [first] [last] — показывает список треков с [first] по [last]
 se, search <query> — находит треки и выводит их с соответсвующими номерами (можно использовать для команды play)
 mi, mounts — выдаёт список занятых диджейских маунтов, чтобы было проще определить свободный
 t, tag <name> — установить название текущего трека в <name>
 v, в <song and artist name> — ищет вконтактике и добавляет указанную песню
-d <number> — удаляет трек номер <number> (первые три защищены)'''
+d <number> — удаляет трек номер <number> (первые три защищены)
+n, next <number> — перемещает трек номер <number> в самый конец плейлиста
+'''
+    global globalbot
+    globalbot = bot
+
     client = mpd.MPDClient()
     try:
         client.connect(host="127.0.0.1", port="6600")
-    except mpd.SocketError:
-        return "ошибка соединения!"
+    except socket.error, msg:
+        return "ошибка соединения: " + msg
     try:
         client.password(mpd_password)
     except mpd.CommandError:

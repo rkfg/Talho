@@ -5,6 +5,8 @@ from misc import _
 
 def main(bot, args):
     """установить уровень баттхёрта в диджейке (в процентах)."""
+    if len(args) < 1:
+        return
     try:
         bhlev = int(args[0])
     except ValueError:

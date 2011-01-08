@@ -3,6 +3,7 @@
 import urllib
 from HTMLParser import HTMLParser
 import time
+from htmlentitydefs import name2codepoint
 
 S_NOTHING, S_QUOTE, S_HEADING, S_QUOTE_TEXT, S_COMPLETE = range(5)
 timeout = 30
