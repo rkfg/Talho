@@ -2,20 +2,21 @@
 # and put talho.mo to /usr/share/locale/ru/LC_MESSAGES
 # or wherever your *.mo files are located.
 
-# Copyright (C) 2011 eurekafag
-# This file is distributed under the same license as the Talho package.
-# eurekafag <eurekafag@eureka7.ru>, 2009-2011.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.0\n"
-"Report-Msgid-Bugs-To: eurekafag@eureka7.ru\n"
-"POT-Creation-Date: 2011-01-09 01:06+0300\n"
-"PO-Revision-Date: 2011-01-09 01:58+0300\n"
-"Last-Translator: eurekafag <eurekafag@eureka7.ru>\n"
-"Language-Team: Russian <eurekafag@eureka7.ru>\n"
-"Language: Russian\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-01-11 05:21+0300\n"
+"PO-Revision-Date: 2011-01-11 05:22+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -170,3 +171,17 @@ msgstr ""
 #: modules/bh.py:29
 msgid "set."
 msgstr "установлено."
+
+#: modules/ans.py:17
+msgid "incorrect name entered, should be 10 symbols."
+msgstr "указано некорректное имя, должно быть 10 символов."
+
+#: modules/ans.py:21
+#, python-format
+msgid ""
+"too long answer, should be less than %d symbols, you entered %d symbols."
+msgstr "слишком длинный ответ, должно быть короче %d символов, а вы ввели %d символов."
+
+#: modules/ans.py:38
+msgid "sent."
+msgstr "отправлено."
