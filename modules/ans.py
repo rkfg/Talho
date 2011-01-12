@@ -5,16 +5,23 @@ import socket
 from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 from cgi import escape
 from misc import _
+from hashlib import md5
 import datetime
 
 def main(bot, args):
 	'''Ответить слушателю. Параметры: <user_id> <message>'''
 	ans_file = "/home/eurekafag/data/www/radioanon.ru/answers.html"
+	syl = { '0' : 'be', '1' : 'sa', '2' : 'ko', '3' : 'pa', '4' : 're', '5' : 'du', '6' : 'ma', '7' : 'ne', '8' : 'wa', '9' : 'si', 'a' : 'to', 'b' : 'za', 'c' : 'mi', 'd' : 'ka', 'e' : 'ga', 'f' : 'no' }
+	salt = "blablabla_enter_random_symbols_here"
 	message_limit = 140
 	if len(args) < 2:
 		return
-	if len(args[0]) != 10:
-		return _("incorrect name entered, should be 10 symbols.")
+	if len(args[0]) != 12:
+		return _("incorrect name entered, should be 12 symbols.")
+	check = md5()
+	check.update(args[0][:8].encode('utf-8') + salt)
+	if check.hexdigest()[:4] != args[0][8:12]:
+		return _("incorrect name entered (checksum invalid).")
         to = ">>" + args[0]
         message = " ".join(args[1:])
 	if len(message) > message_limit:
