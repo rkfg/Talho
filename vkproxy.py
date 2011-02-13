@@ -22,8 +22,9 @@ class VkHandler(BaseHTTPRequestHandler):
 
             req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc)
             handle = opener.open(req)
+            #result = handle.read().decode("cp1251")
 
-            req = urllib2.Request("http://vkontakte.ru/gsearch.php?q=%s&section=audio" % self.path[1:])
+            req = urllib2.Request("http://vkontakte.ru/gsearch.php?from=audio&q=%s&section=audio" % self.path[1:].encode("cp1251"))
 
             handle = opener.open(req)
             result = handle.read().decode("cp1251")

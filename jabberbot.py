@@ -224,7 +224,7 @@ class JabberBot:
                     if result:
                         self.send(user, type, misc.force_unicode(prefix) + u", " + misc.force_unicode(result))
                         return
-                    
+                                     
                 if not text.startswith('%show') and re.search('http://[^ ]+', text):
                     link = re.findall('(http://[^ ]+)', text)[0]
                     title = misc.getTitle(link)

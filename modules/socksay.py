@@ -12,6 +12,10 @@ class MyUDHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         global botglobal
         data = self.request[0].decode("utf-8")
+        if not hasattr(botglobal, "usersposts"):
+            botglobal.usersposts = {}
+        botglobal.usersposts[data[5:17]] = data[19:]
+        
 	botglobal.send("jabrach@conference.jabber.ru", "groupchat", data, "<html xmlns='http://jabber.org/protocol/xhtml-im'> <body xmlns='http://www.w3.org/1999/xhtml'> <span style='font-family: Comic Sans MS; font-weight: bold;'><br/>=== SITE MESSAGE ===<br/>%s<br/>=== CUT HERE ===<br/></span></body></html>" % data)
 
 class ThreadedUnixDatagramServer(SocketServer.ThreadingMixIn, SocketServer.UnixDatagramServer):
