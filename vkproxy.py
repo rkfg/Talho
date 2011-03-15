@@ -20,11 +20,12 @@ class VkHandler(BaseHTTPRequestHandler):
         try:
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
-            req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc)
+            url = "http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc
+            req = urllib2.Request(url)
             handle = opener.open(req)
             #result = handle.read().decode("cp1251")
 
-            req = urllib2.Request("http://vkontakte.ru/gsearch.php?from=audio&q=%s&section=audio" % self.path[1:].encode("cp1251"))
+            req = urllib2.Request("http://vkontakte.ru/gsearch.php?from=audio&q=%s&section=audio" % self.path[1:])
 
             handle = opener.open(req)
             result = handle.read().decode("cp1251")
@@ -37,13 +38,13 @@ class VkHandler(BaseHTTPRequestHandler):
 		tmpfile = open(dl_name, "wb")
 
                 while True:
-                    chunk = mp3_handle.read(16 * 1024)
+                    chunk = mp3_handle.read(1024 * 1024)
                     if not chunk:
                         break
 		    tmpfile.write(chunk)
 
-                mp3_handle.close()
 		tmpfile.close()
+                mp3_handle.close()
 		tmpfile = open(dl_name, "rb")
                 self.send_response(200)
                 self.send_header('Content-type', 'audio/mp3')
@@ -59,7 +60,7 @@ class VkHandler(BaseHTTPRequestHandler):
                 return
 
 	except socket.error, msg:
-	    self.wfile.close()
+            print str("".join(traceback.format_exception(*sys.exc_info())))
 	    os.unlink(dl_name)
 	    return
         except:
@@ -77,5 +78,5 @@ class VkHandler(BaseHTTPRequestHandler):
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
-server = ThreadedHTTPServer(('127.0.0.1', 8080), VkHandler)
+server = ThreadedHTTPServer(('0.0.0.0', 8080), VkHandler)
 server.serve_forever()

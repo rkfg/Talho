@@ -10,8 +10,8 @@ import datetime
 
 def main(bot, args):
 	'''Ответить слушателю. Параметры: <user_id> <message>
-+Если в качестве user_id указать восклицательный знак, сообщение будет выглядеть как объявление.'''
-	ans_file = "/home/eurekafag/data/www/radioanon.ru/answers.html"
+Если в качестве user_id указать восклицательный знак, сообщение будет выглядеть как объявление.'''
+	ans_file = "/srv/radioanon.ru/htdocs/answers.html"
 	syl = { '0' : 'be', '1' : 'sa', '2' : 'ko', '3' : 'pa', '4' : 're', '5' : 'du', '6' : 'ma', '7' : 'ne', '8' : 'wa', '9' : 'si', 'a' : 'to', 'b' : 'za', 'c' : 'mi', 'd' : 'ka', 'e' : 'ga', 'f' : 'no' }
 	salt = "blablabla_enter_random_symbols_here"
 	message_limit = 250

@@ -99,7 +99,7 @@ def track_list(client, *args):
 def track_search(client, *args):
     if not args:
         return
-    result = client.playlistsearch("any", " ".join(args))[:20]
+    result = client.playlistsearch("any", (" ".join(args)).encode('utf-8'))[:20]
     return fancy_tracks(result)
 
 def mounts_info(client, *args):
@@ -154,7 +154,7 @@ def add_vk(client, *args):
         if match:
             playtime = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
             link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
-            id = client.addid("http://127.0.0.1:8080/" + "+".join(args))
+            id = client.addid(("http://127.0.0.1:8080/" + "+".join(args)).encode('utf-8'))
 	    #client.moveid(id, 100)
 	    position = int(client.status()['playlistlength']) - 1
             #client.playid(id)

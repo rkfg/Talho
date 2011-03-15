@@ -78,7 +78,7 @@ class jbHTMLParser(HTMLParser):
         elif self.state == S_GET_ATTR_VALUE:
             self.attr_value += data
 			
-def getRadioState(radiourl='http://radioanon.ru:8000'):
+def getRadioState(radiourl='http://127.0.0.1:8000'):
 	try:
 		page = urllib.urlopen(radiourl)
 		data = page.read()

@@ -24,7 +24,10 @@ class ThreadedUnixDatagramServer(SocketServer.ThreadingMixIn, SocketServer.UnixD
 def info(bot):
     global botglobal
     botglobal = bot
-    os.unlink("/tmp/botsock")
+    try:
+        os.unlink("/tmp/botsock")
+    except:
+        pass
     if hasattr(bot, "server"):
         bot.server.shutdown()
         bot.server = None

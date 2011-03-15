@@ -14,7 +14,7 @@ def main(bot, args):
     if bhlev < 0 or bhlev > 100:
         return
 
-    bhpage = open('/home/eurekafag/data/www/radioanon.ru/bhl.php', 'w')
+    bhpage = open('/srv/radioanon.ru/htdocs/bhl.php', 'w')
 
     if bhlev < 50:
         g = 255

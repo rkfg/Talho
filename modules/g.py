@@ -44,27 +44,27 @@ y - youtube.com'''
 def google(query):
     query = urllib.quote(query.encode('utf-8'))
     try:
-        data = misc.readUrl('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&hl=ru' %query)
+        data = misc.readUrl('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&hl=ru' % query)
         if not data: return 'can\'t get data'
     except:
         return _("google is not available, sorry.")
 
     try:
-        convert = loads(data)
-        results = convert['responseData']['results']
-        if not results: return 'not found'
+    	convert = loads(data)
+	results = convert['responseData']['results']
+	if not results: return 'not found'
 
-        url = urllib.unquote(results[0]['url'])
-        title = results[0]['titleNoFormatting']
-        content = results[0]['content']
-        text = '%s\n%s\n%s' %(title, content, url)
+    	url = urllib.unquote(results[0]['url'])
+    	title = results[0]['titleNoFormatting']
+    	content = results[0]['content']
+    	text = '%s\n%s\n%s' %(title, content, url)
 
-        text = re.sub('<b>|</b>', '', text)
-        text = re.sub('   ', '\n', text)
+    	text = re.sub('<b>|</b>', '', text)
+    	text = re.sub('   ', '\n', text)
 
-        return text
+    	return text
     except:
-        return 'error'
+    	return 'error'
 
 def info(bot):
     return ((u"g", u"г", u"п"), 10, main)

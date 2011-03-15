@@ -12,7 +12,9 @@ def rev(x):
         return x
 
 def main(bot, text):
-    answers = [u"думаю, что %s", u"есть мнение, и не только моё, что %s", u"по-моему, %s", u"мне кажется, %s", u"боженька говорит %s", u"пацаны говорят, что %s", u"не исключено, что %s"]
+    if len(text) > 200:
+        return
+    answers = [u"думаю, что %s", u"есть мнение, и не только моё, что %s", u"по-моему, %s", u"мне кажется, %s", u"боженька говорит, %s", u"пацаны говорят, что %s", u"не исключено, что %s"]
     text = text.lower()
     choices = text.split(u" или ")
     choices = [ c.strip().replace("?", "").replace("!", "") for c in choices ]
