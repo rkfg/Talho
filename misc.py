@@ -20,7 +20,7 @@ def force_unicode(string, encoding='utf-8'): #{{{
     return string
 #}}}
 
-def readUrl(url, cookies=None, bot): #{{{
+def readUrl(url, cookies=None, bot=None): #{{{
     parsedurl = re.search('http://([^/]+)/?(.*)', url)
     if parsedurl and len(parsedurl.groups()) > 0:
         c = httplib.HTTPConnection(parsedurl.group(1))
@@ -34,7 +34,8 @@ def readUrl(url, cookies=None, bot): #{{{
 
     try:
         if url.startswith('http://vkontakte.ru') or url.startswith('http://www.vkontakte.ru'):
-            headers['Cookie'] = bot.settings["vkontakte_cookies"]
+            if bot:
+                headers['Cookie'] = bot.settings["vkontakte_cookies"]
         if cookies:
             headers['Cookie'] = cookies
         
