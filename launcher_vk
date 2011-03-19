@@ -1,0 +1,4 @@
+#!/bin/sh
+
+tmux new-window "sudo -u user /usr/bin/env python vkproxy.py"
+

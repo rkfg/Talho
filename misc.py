@@ -12,10 +12,6 @@ headers = {}
 headers['User-Agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB;'+\
                         'rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4'
 
-vkontakte_cookies = 'remixsid=123123123' # set this to valid cookie
-
-nowai_cookies = 'hash=123123123; PHPSESSID=123123123' # set this to valid cookie
-
 def force_unicode(string, encoding='utf-8'): #{{{
     if type(string) is str:
         string = string.decode(encoding)
@@ -24,7 +20,7 @@ def force_unicode(string, encoding='utf-8'): #{{{
     return string
 #}}}
 
-def readUrl(url, cookies=None): #{{{
+def readUrl(url, cookies=None, bot): #{{{
     parsedurl = re.search('http://([^/]+)/?(.*)', url)
     if parsedurl and len(parsedurl.groups()) > 0:
         c = httplib.HTTPConnection(parsedurl.group(1))
@@ -38,7 +34,7 @@ def readUrl(url, cookies=None): #{{{
 
     try:
         if url.startswith('http://vkontakte.ru') or url.startswith('http://www.vkontakte.ru'):
-            headers['Cookie'] = vkontakte_cookies
+            headers['Cookie'] = bot.settings["vkontakte_cookies"]
         if cookies:
             headers['Cookie'] = cookies
         
@@ -63,12 +59,12 @@ def getImgXML(img_url, img_src): #{{{
            '</html>'
 #}}}
 
-def getTitle(link): #{{{
+def getTitle(link, bot): #{{{
     if re.search('^http://danbooru\.donmai\.us', link) or re.search('^http://(www\.)?gelbooru\.com', link):
         return ''
     else:
         try:
-            data = readUrl(link)
+            data = readUrl(link, None, bot)
 	    if "opennet.ru" in link:
 	        data_enc = data.decode('koi8-r')
             else:
@@ -79,10 +75,10 @@ def getTitle(link): #{{{
             return ''
 #}}}
 
-def makeTiny(link): #{{{
+def makeTiny(link, bot): #{{{
     url = 'http://tinyurl.com/api-create.php?url=%s' %link.encode('utf-8')
     try:
-        return readUrl(url)
+        return readUrl(url, None, bot)
     except:
         return ''
 #}}}

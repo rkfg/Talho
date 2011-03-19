@@ -9,8 +9,7 @@ import traceback
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 import socket
-
-vk_acc = ("bydlo@vkontakte.ru", "bydlopassword")
+from vkproxy_settings import vk_acc
 
 class VkHandler(BaseHTTPRequestHandler):
 

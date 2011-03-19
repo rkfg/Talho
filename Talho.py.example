@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 ###############################################
-# C.C. - jabber bot
+# Talho - jabber bot
 # Copyright (C) 2008 anonymous
+# (C) eurekafag 2009-2011
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,11 +27,21 @@ os.chdir(sys.path[0])
 from jabberbot import JabberBot
 
 # Settings {{{
-user  = ( u'talho@radioanon.ru', u'password', u'Talho' ) # jid, pass, nick
-rooms = { u'radiochan@conference.jabber.ru': ('', 10), u'radiochan@conference.radioanon.ru': ('', 10), u'jabrach@conference.jabber.ru': ('', 9) } # conference jid : (nick, conference default level)
-usersjid = { u'eurekafag@eureka7.ru' : 0 } # admin's jid
-usersnick = { u'eurekafag' : 0, u'abappеl' : 1, u'anonmax' : 1 } # nick : level
+user  = (u'talho@radioanon.ru', u'password', u'Talho') # jid, pass, nick
+rooms = {u'radiochan@conference.jabber.ru': ('', 10), u'radiochan@conference.radioanon.ru': ('', 10), u'jabrach@conference.jabber.ru': ('', 9)} # conference jid : (nick, conference default level)
+usersjid = {u'eurekafag@eureka7.ru': 0} # admin's jid
+usersnick = {u'eurekafag': 0} # nick : level
 #}}}
+
+mpd_password = "password_for_mpd_access"
+icecast_admin = ("admin", "admin")
+vk_acc = ("user@mail.ru", "password")
+mpd_addr = {"host": "127.0.0.1", "port": "6600"}
+google_key = "blablabla" # get it on http://code.google.com/intl/ru-RU/apis/loader/signup.html
+ans_file = "/srv/radioanon.ru/htdocs/answers.html"
+bh_file = "/srv/radioanon.ru/htdocs/bhl.php"
+ans_salt = "type_random_letters_here"
+vkontakte_cookies = "remixsid=valid_cookie_should_be_here"
 
 def handle_pdb(sig, frame):
     import pdb
@@ -39,6 +50,16 @@ def handle_pdb(sig, frame):
 def main(): #{{{
     signal.signal(signal.SIGUSR1, handle_pdb)
     bot = JabberBot(user, rooms, usersjid, usersnick, logfile)
+    bot.settings = {}
+    bot.settings['mpd_password'] = mpd_password
+    bot.settings['icecast_admin'] = icecast_admin
+    bot.settings['vk_acc'] = vk_acc
+    bot.settings['mpd_addr'] = mpd_addr
+    bot.settings['google_key'] = google_key
+    bot.settings['ans_file'] = ans_file
+    bot.settings['bh_file'] = bh_file
+    bot.settings['ans_salt'] = ans_salt
+    bot.settings['vkontakte_cookies'] = vkontakte_cookies
     bot.load()
     bot.process()
 #}}}

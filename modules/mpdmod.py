@@ -9,23 +9,20 @@ import urllib2
 import re
 import datetime
 import time
- 
+
 from misc import _
 
 globalbot = None
 
-mpd_password = "mpdpassword" # set this to mpd pass
-icecast_admin = ("admin", "adminpassword") # set this to admin pass
-vk_acc = ("vk_login@vkontakte.ru", "vkontakte_password")
-
 class IcecastAdminOpener(urllib.FancyURLopener):
     def prompt_user_passwd(self, host, realm):
-        return icecast_admin
+        global globalbot
+        return globalbot.settings["icecast_admin"]
 
 def check_block():
     global globalbot
-    if hasattr(globalbot, "block_time") and datetime.datetime.now() < globalbot.block_time:
-        return _("mpd control is blocked, %s left") % (globalbot.block_time - datetime.datetime.now())
+    if "block_time" in globalbot.settings and datetime.datetime.now() < globalbot.settings["block_time"]:
+        return _("mpd control is blocked, %s left") % (globalbot.settings["block_time"] - datetime.datetime.now())
     else:
         return None
 
@@ -139,9 +136,10 @@ def add_vk(client, *args):
         return
 
     try:
+        global globalbot
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
-        req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc)
+        req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % globalbot.settings['vk_acc'])
         handle = opener.open(req)
         req_args = urllib.urlencode({ "q" : " ".join(args).encode("utf-8"), "section" : "audio" })
 
@@ -266,11 +264,11 @@ n, next <number> — перемещает трек номер <number> в сам
 
     client = mpd.MPDClient()
     try:
-        client.connect(host="127.0.0.1", port="6600")
+        client.connect(**bot.settings["mpd_addr"])
     except socket.error, msg:
         return "ошибка соединения: " + msg
     try:
-        client.password(mpd_password)
+        client.password(bot.settings['mpd_password'])
     except mpd.CommandError:
         client.disconnect()
         return "неверный пароль!"

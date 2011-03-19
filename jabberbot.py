@@ -227,13 +227,13 @@ class JabberBot:
                                      
                 if not text.startswith('%show') and re.search('http://[^ ]+', text):
                     link = re.findall('(http://[^ ]+)', text)[0]
-                    title = misc.getTitle(link)
+                    title = misc.getTitle(link, self)
                     if title:
                         if re.search('http://(www\.)?youtube.com/', link) and re.search('[rR][iI][cC][kK]', title):
                             self.send(user, type, u'%s — там рикролл!!!' %link)
                         else:
                             tiny = ''
-                            if len(link) > 70: tiny = ' ( %s )' %misc.makeTiny(link)
+                            if len(link) > 70: tiny = ' ( %s )' %misc.makeTiny(link, self)
                             self.send(user, type, u'Title: %s%s' %(title, tiny))
                 return
             else:

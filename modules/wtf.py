@@ -7,9 +7,9 @@ from simplejson import loads
 def main(bot, args):
     '''wtf [text]\nDetect text language or show avialable languages if no text given.\nSee also: tr'''
 
-    return detect_lang(' '.join(args))
+    return detect_lang(' '.join(args), bot)
 
-def detect_lang(text):
+def detect_lang(text, bot):
 	google_langs =\
 		{ 'af':'Afrikaans','sq':'Albanian','am':'Amharic','ar':'Arabic','hy':'Armenian','az':'Azerbaijani','eu':'Basque'
 		, 'be':'Belarusian','bn':'Bengali','bh':'Bihari','bg':'Bulgarian','my':'Burmese','ca':'Catalan','chr':'Cherokee'
@@ -29,7 +29,7 @@ def detect_lang(text):
 		return ", ".join(["%s (%s)" %(v, k) for k, v in google_langs.items()])
 
 	text = urllib.quote(text.encode('utf-8'))
-	data = misc.readUrl('http://ajax.googleapis.com/ajax/services/language/detect?v=1.0&q=%s' %(text))
+	data = misc.readUrl('http://ajax.googleapis.com/ajax/services/language/detect?v=1.0&q=%s' %(text), None, bot)
 	if not data: return 'can\'t get data'
 
 	try:

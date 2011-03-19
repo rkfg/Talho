@@ -39,12 +39,16 @@ y - youtube.com'''
         site = 'site:%s ' %site
         args = args[1:]
 
-    return google(site + ' '.join(args))
+    return google(site + ' '.join(args), bot)
 
-def google(query):
+def google(query, bot):
     query = urllib.quote(query.encode('utf-8'))
     try:
-        data = misc.readUrl('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&hl=ru' % query)
+        if "google_key" in bot.settings:
+            google_key = "&key=" + bot.settings["google_key"]
+        else:
+            google_key = ""
+        data = misc.readUrl('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s&hl=ru%s' % (query, google_key), None, bot)
         if not data: return 'can\'t get data'
     except:
         return _("google is not available, sorry.")
