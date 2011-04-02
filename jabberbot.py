@@ -107,7 +107,10 @@ class JabberBot:
         if self.commands.has_key(args[0]):
             del self.commands[args[0]]
         else:
-            return _('MODULE: %s not loaded') % args[0]
+            if self.plaintext_dispatchers.has_key(args[0]):
+                del self.plaintext_dispatchers[args[0]]
+            else:
+                return _('MODULE: %s not loaded') % args[0]
 
         info = _('MODULE: %s removed') % args[0]
         logging.info(info)

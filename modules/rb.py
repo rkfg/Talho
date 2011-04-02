@@ -33,7 +33,7 @@ def main(bot, args):
 	for i in xrange(rollback_from - 1, rollback_to):
 		posts[i].extract()
 
-	f = open(ans_file, "w")
+	f = open(bot.settings["ans_file"], "w")
 	f.write(soup.prettify())
 	f.close()
         
