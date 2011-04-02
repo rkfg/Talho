@@ -48,7 +48,7 @@ class Markov():
         while len(words) < 3:
             words.append("")
             
-        for i in xrange(len(words) - 3):
+        for i in xrange(len(words) - 2):
             self.c.execute("INSERT INTO words (word1, word2, word3) VALUES (?, ?, ?)", (words[i], words[i + 1], words[i + 2]))
             self.tablesize += 1
         self.conn.commit()
