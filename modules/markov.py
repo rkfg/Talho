@@ -36,11 +36,9 @@ class Markov():
         for i in xrange(length):
             if not words[2]:
                 break
-            allvariants = self.c.execute("SELECT word1, word2, word3 FROM words WHERE word1=?",
-                                                 (words[2],)).fetchall()
-            if not allvariants:
+            words = self.c.execute("SELECT word1, word2, word3 FROM words WHERE word1=? ORDER BY RANDOM() LIMIT 1", (words[2],)).fetchone()
+            if not words:
                 break
-            words = random.choice(allvariants)
             result += ' ' + ' '.join(words[1:])
         return result
 
