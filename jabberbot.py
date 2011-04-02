@@ -208,7 +208,7 @@ class JabberBot:
 
         level = 10
         if self._inRoom(user):
-            if prefix == "Miria":
+            if prefix in self.settings['ignors']:
                 return
             level = self.rooms[user][1] # room-level
             if prefix in self.usersnick:     # Msg from room

@@ -42,6 +42,7 @@ ans_file = "/srv/radioanon.ru/htdocs/answers.html"
 bh_file = "/srv/radioanon.ru/htdocs/bhl.php"
 ans_salt = "type_random_letters_here"
 vkontakte_cookies = "remixsid=valid_cookie_should_be_here"
+ignors = ["^__^", "Miria", "other nicks you want bot not to react to"]
 
 def handle_pdb(sig, frame):
     import pdb
@@ -60,6 +61,7 @@ def main(): #{{{
     bot.settings['bh_file'] = bh_file
     bot.settings['ans_salt'] = ans_salt
     bot.settings['vkontakte_cookies'] = vkontakte_cookies
+    bot.settings['ignors'] = ignors
     bot.load()
     bot.process()
 #}}}
