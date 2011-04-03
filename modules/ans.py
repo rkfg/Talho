@@ -59,5 +59,4 @@ def main(bot, args):
         return _("sent.")
 
 def info(bot):
-	bot.usersposts = {}
 	return (("a", u"ф"), 9, main)
