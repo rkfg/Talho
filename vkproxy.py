@@ -35,12 +35,13 @@ class VkHandler(BaseHTTPRequestHandler):
                 link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
                 mp3_handle = urllib2.urlopen(link)
 	        self.send_response(200)
-                self.send_header('Content-type', 'audio/mp3')
+                self.send_header('Content-Type', mp3_handle.headers['Content-Type'])
+                self.send_header('Content-Length', mp3_handle.headers['Content-Length'])
                 self.end_headers()
 	#tmpfile = open(dl_name, "wb")
 
                 while True:
-                    chunk = mp3_handle.read(1024 * 1024)
+                    chunk = mp3_handle.read(128 * 1024)
                     if not chunk:
                         break
                     self.wfile.write(chunk)
