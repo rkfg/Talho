@@ -34,33 +34,34 @@ class VkHandler(BaseHTTPRequestHandler):
             if match:
                 link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
                 mp3_handle = urllib2.urlopen(link)
-		tmpfile = open(dl_name, "wb")
+	        self.send_response(200)
+                self.send_header('Content-type', 'audio/mp3')
+                self.end_headers()
+	#tmpfile = open(dl_name, "wb")
 
                 while True:
                     chunk = mp3_handle.read(1024 * 1024)
                     if not chunk:
                         break
-		    tmpfile.write(chunk)
-
-		tmpfile.close()
-                mp3_handle.close()
-		tmpfile = open(dl_name, "rb")
-                self.send_response(200)
-                self.send_header('Content-type', 'audio/mp3')
-                self.end_headers()
-                while True:
-                    chunk = tmpfile.read(16 * 1024)
-                    if not chunk:
-                        break
                     self.wfile.write(chunk)
-		tmpfile.close()
+		    #tmpfile.write(chunk)
+
+		#tmpfile.close()
+                mp3_handle.close()
+		#tmpfile = open(dl_name, "rb")
+                #while True:
+                #    chunk = tmpfile.read(16 * 1024)
+                #    if not chunk:
+                #        break
+                #    self.wfile.write(chunk)
+		#tmpfile.close()
 		self.wfile.close()
-		os.unlink(dl_name)
+		#os.unlink(dl_name)
                 return
 
 	except socket.error, msg:
             print str("".join(traceback.format_exception(*sys.exc_info())))
-	    os.unlink(dl_name)
+	    #os.unlink(dl_name)
 	    return
         except:
             print str("".join(traceback.format_exception(*sys.exc_info())))

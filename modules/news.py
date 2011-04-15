@@ -6,8 +6,8 @@ from misc import _
 def main(bot, args):
     """сбросить кэш новостей."""
     try:
-        os.unlink("/home/eurekafag/data/www/radioanon.ru/cache/cache.dat")
-        os.unlink("/home/eurekafag/data/www/radioanon.ru/cache/cache.upd")
+        os.unlink("/srv/radioanon.ru/htdocs/cache/cache.dat")
+        os.unlink("/srv/radioanon.ru/htdocs/cache/cache.upd")
     except:
         pass
     return _("dropped cache.")
