@@ -11,17 +11,15 @@ from SocketServer import ThreadingMixIn
 import socket
 from vkproxy_settings import vk_acc
 
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+
 class VkHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        global opener
 
         dl_name = os.tmpnam()
         try:
-            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
-
-            url = "http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc
-            req = urllib2.Request(url)
-            handle = opener.open(req)
             #result = handle.read().decode("cp1251")
 
             req = urllib2.Request("http://vkontakte.ru/gsearch.php?from=audio&q=%s&section=audio" % self.path[1:])
@@ -78,6 +76,10 @@ class VkHandler(BaseHTTPRequestHandler):
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
+
+url = "http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc
+req = urllib2.Request(url)
+handle = opener.open(req)
 
 server = ThreadedHTTPServer(('0.0.0.0', 8080), VkHandler)
 server.serve_forever()
