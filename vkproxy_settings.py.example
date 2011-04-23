@@ -1,1 +1,2 @@
-vk_acc = ("user@mail.ru", "password")
+vk_acc = ("user@mail.ru", "password") # e-mail and password
+vk_max_res = 2 # max resolution of video 0-3 (see smvk.py resolutions line)

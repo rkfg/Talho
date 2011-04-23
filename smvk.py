@@ -9,9 +9,10 @@ import traceback
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 import socket
-from vkproxy_settings import vk_acc
+from vkproxy_settings import vk_acc, vk_max_res
 
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+resolutions = [240, 360, 480, 720]
 
 class VkHandler(BaseHTTPRequestHandler):
 
@@ -40,8 +41,16 @@ class VkHandler(BaseHTTPRequestHandler):
                 if idsmatch:
                     if idsmatch.group(2).startswith("http:"):
                         host = idsmatch.group(2).replace("\\", "") # old vk
-                        if videopage.find('"no_flv":1') > 0:
-                            ext = '240.mp4'
+                        if videopage.find('"no_flv":1') > 0: # mp4, get the highest definition
+                            vresm = re.search(ur'"hd":(\d)', videopage)
+                            if vresm:
+                                if int(vresm.group(1)) > vk_max_res:
+                                    vres = resolutions[vk_max_res]
+                                else:
+                                    vres = resolutions[int(vresm.group(1))]
+                            else:
+                                vres = 240
+                            ext = str(vres) + '.mp4'
                         else:
                             ext = 'flv'
                         link = "%su%s/video/%s.%s" % (host, idsmatch.group(1), idsmatch.group(3), ext)
