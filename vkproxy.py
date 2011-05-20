@@ -22,11 +22,12 @@ class VkHandler(BaseHTTPRequestHandler):
         try:
             #result = handle.read().decode("cp1251")
 
-            req = urllib2.Request("http://vkontakte.ru/search?q=%s&section=audio" % urllib.unquote(self.path[1:]).decode('utf-8').encode('cp1251'))
+            req = urllib2.Request("http://vkontakte.ru/search?c%%5Bq%%5D=%s&c%%5Bsection%%5D=audio" % self.path[1:])
 
             handle = opener.open(req)
-            result = handle.read().decode("cp1251")
+            result = handle.read()
             handle.close()
+            result = result.decode("cp1251", "ignore")
 
             match = re.search(ur"value=\"(http:[^,]+),", result)
             if match:
