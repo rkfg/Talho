@@ -13,6 +13,7 @@ import time
 from misc import _
 
 globalbot = None
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
 class IcecastAdminOpener(urllib.FancyURLopener):
     def prompt_user_passwd(self, host, realm):
@@ -137,45 +138,31 @@ def add_vk(client, *args):
 
     try:
         global globalbot
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
-
-        req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % globalbot.settings['vk_acc'])
-        handle = opener.open(req)
-        req_args = urllib.urlencode({ "q" : " ".join(args).encode("utf-8"), "section" : "audio" })
-
-        req = urllib2.Request("http://vkontakte.ru/gsearch.php?" + req_args)
+        global opener
+        req_args = urllib.urlencode({ "q" : " ".join(args).encode('cp1251'), "section" : "audio" })
+        req = urllib2.Request("http://vkontakte.ru/search?" + req_args)
 
         handle = opener.open(req)
         result = handle.read().decode("cp1251")
 
-        match = re.search(ur"onclick=\"return operate\((\d+),(\d+),(\d+),'([^']+)'", result)
+        match = re.search(ur"value=\"(http:[^,]+),", result)
         if match:
-            playtime = re.search(ur"<div class=\"duration\">([0-9:]+)</div>", result)
-            link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
+            playtime = re.search(ur"<div class=\"duration fl_r\">([0-9:]+)</div>", result)
             id = client.addid(("http://127.0.0.1:8080/" + "+".join(args)).encode('utf-8'))
-	    #client.moveid(id, 100)
 	    position = int(client.status()['playlistlength']) - 1
-            #client.playid(id)
-	    #time.sleep(3)
-	    title = re.search(ur"<b id=\"performer\d+\">([^<]+)</b><span>&nbsp;-&nbsp;</span><span id=\"title\d+\">([^<]+)</span>", result)
+	    title = re.search(ur"<b><a href=[^>]+>([^<]+)</a></b> - <span id=\"title[^\"]+\">([^<]+)</span>", result)
 	    if title:
 	        title = title.group(1) + u" — " + title.group(2)
             else:
 	        title = _("no title")
-            #metadata_opener = IcecastAdminOpener()
-            #update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : "[" + title.group(1).encode("utf-8") + "]" + " — " + title.group(2).encode("utf-8") })
-            #metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
 
             if playtime:
                 playtime = playtime.group(1)
                 now = datetime.datetime.now()
-                #duration = datetime.datetime.strptime(playtime, "%M:%S")
-                #finish = (now + datetime.timedelta(hours = duration.hour, minutes = duration.minute, seconds = duration.second)).strftime("%H:%M:%S")
             else:
                 playtime = _("unknown")
                 finish = _("unknown")
 
-            #return _("found new track #%s, duration is: %s will finish at: %s") % (id, playtime, finish)
             return _("found new track #%s named \"%s\", duration is: %s") % (position, title, playtime)
         else:
             return _("nothing found.")
@@ -295,5 +282,8 @@ if __name__ == "__main__":
 	print main(None, None)
         
 def info(bot):
-    return ((u"mpd", u"m", u"ь", u"ьзв", u"м", u"мпд"), 9, main)
+   req = urllib2.Request("http://vkontakte.ru/login.php?email=%s&pass=%s" % bot.settings['vk_acc'])
+   handle = opener.open(req)
+
+   return ((u"mpd", u"m", u"ь", u"ьзв", u"м", u"мпд"), 9, main)
 

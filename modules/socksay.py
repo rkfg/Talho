@@ -13,6 +13,8 @@ class MyUDHandler(SocketServer.BaseRequestHandler):
         global botglobal
         data = self.request[0].decode("utf-8")
         botglobal.usersposts[data[5:17]] = data[19:]
+	if data[5:17] in botglobal.blacklist:
+		return
         
 	botglobal.send("jabrach@conference.jabber.ru", "groupchat", data, "<html xmlns='http://jabber.org/protocol/xhtml-im'> <body xmlns='http://www.w3.org/1999/xhtml'> <span style='font-family: Comic Sans MS; font-weight: bold;'><br/>=== SITE MESSAGE ===<br/>%s<br/>=== CUT HERE ===<br/></span></body></html>" % data)
 
@@ -24,6 +26,7 @@ def info(bot):
     botglobal = bot
     if not hasattr(botglobal, "usersposts"):
         botglobal.usersposts = {}
+        botglobal.blacklist = []
     try:
         os.unlink("/tmp/botsock")
     except:

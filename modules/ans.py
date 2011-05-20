@@ -17,7 +17,11 @@ def main(bot, args):
 	userpost = ""
 	if len(args) < 2:
 		return
+	blacklisting = False
 	if args[0] != "!":
+		if args[0] == "?":
+			blacklisting = True
+			del args[0]
 		if len(args[0]) != 12:
 			return _("incorrect name entered, should be 12 symbols.")
 		check = md5()
@@ -25,6 +29,10 @@ def main(bot, args):
 		if check.hexdigest()[:4] != args[0][8:12]:
 			return _("incorrect name entered (checksum invalid).")
 	
+		if blacklisting:
+			bot.blacklist.append(args[0])
+			return _("%s was added to blacklist.") % args[0]
+
 		to = ">>" + args[0]
 		if args[0] in bot.usersposts:
 			userpost = "<span class=\"userpost\">&gt; " + escape(bot.usersposts[args[0]]) + "</span><br/>"

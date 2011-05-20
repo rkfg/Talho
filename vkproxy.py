@@ -22,15 +22,15 @@ class VkHandler(BaseHTTPRequestHandler):
         try:
             #result = handle.read().decode("cp1251")
 
-            req = urllib2.Request("http://vkontakte.ru/gsearch.php?from=audio&q=%s&section=audio" % self.path[1:])
+            req = urllib2.Request("http://vkontakte.ru/search?q=%s&section=audio" % urllib.unquote(self.path[1:]).decode('utf-8').encode('cp1251'))
 
             handle = opener.open(req)
             result = handle.read().decode("cp1251")
             handle.close()
 
-            match = re.search(ur"onclick=\"return operate\((\d+),(\d+),(\d+),'([^']+)'", result)
+            match = re.search(ur"value=\"(http:[^,]+),", result)
             if match:
-                link = "http://cs%s.vkontakte.ru/u%s/audio/%s.mp3" % (match.group(2), match.group(3), match.group(4))
+                link = match.group(1)
                 mp3_handle = urllib2.urlopen(link)
 	        self.send_response(200)
                 self.send_header('Content-Type', mp3_handle.headers['Content-Type'])
