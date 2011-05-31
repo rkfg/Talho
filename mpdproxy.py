@@ -8,7 +8,10 @@ client = mpd.MPDClient()
 client.connect("127.0.0.1", "6600")
 play = True
 if not sys.stdin.isatty(): # got some data from pipe
-    for track in sys.stdin:
+    while 1:
+        track = sys.stdin.readline()
+        if not track:
+            break
         track = track.replace(" ", "+").strip()
         print "Adding %s" % track
         client.addid("http://127.0.0.1:8080/%s" % track)

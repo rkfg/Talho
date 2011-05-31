@@ -58,3 +58,4 @@ for result in artistResults:
 				if not sys.stdout.isatty():
 					print >> sys.stderr, full_title
 				tracks_ids.append(full_title)
+		sys.stdout.flush()
