@@ -9,11 +9,16 @@ import urllib2
 import re
 import datetime
 import time
+import HTMLParser
 
 from misc import _
 
 globalbot = None
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+
+def htmlunescape(s):
+    p = HTMLParser.HTMLParser()
+    return p.unescape(s)
 
 class IcecastAdminOpener(urllib.FancyURLopener):
     def prompt_user_passwd(self, host, realm):
@@ -139,7 +144,7 @@ def add_vk(client, *args):
     try:
         global globalbot
         global opener
-        req_args = urllib.urlencode({ "q" : " ".join(args).encode('cp1251'), "section" : "audio" })
+        req_args = urllib.urlencode({ "c[q]" : " ".join(args).encode('utf-8'), "c[section]" : "audio" })
         req = urllib2.Request("http://vkontakte.ru/search?" + req_args)
 
         handle = opener.open(req)
@@ -163,7 +168,7 @@ def add_vk(client, *args):
                 playtime = _("unknown")
                 finish = _("unknown")
 
-            return _("found new track #%s named \"%s\", duration is: %s") % (position, title, playtime)
+            return _("found new track #%s named \"%s\", duration is: %s") % (position, htmlunescape(title), playtime)
         else:
             return _("nothing found.")
     #except ValueError:
@@ -192,9 +197,19 @@ def set_next(client, *args):
     except:
         return
 
+def last(client, *args):
+    log = open("/home/dj/.mpd/mpd.log")
+    tracks = []
+    for line in log:
+        if "playlist" in line:
+            tracks.append(line)
+
+    tracks = tracks[:-5]
+    log.close()
+    return "\n".join(tracks)
+
 commands = { u'shuffle' : shuffle,
              u'sh' : shuffle,
-	     u'ш': shuffle,
 	     u'ыргааду': shuffle,
 	     u'ыр': shuffle,
              u'p': play,
@@ -205,33 +220,31 @@ commands = { u'shuffle' : shuffle,
              u'list': track_list,
              u'ls': track_list,
              u'l': track_list,
-	     u'л': track_list,
 	     u'дшые': track_list,
 	     u'ды': track_list,
 	     u'д': track_list,
              u'se': track_search,
              u'search': track_search,
-	     u'с': track_search,
+	     u'ы': track_search,
              u'ыу': track_search,
              u'ыуфкср': track_search,
              u'mounts': mounts_info,
              u'mi': mounts_info,
              u'ьщгтеы': mounts_info,
              u'ьш': mounts_info,
-	     u'и': mounts_info,
-	     u'м': mounts_info,
-	     u'ми': mounts_info,
+	     u'ь': mounts_info,
              u'tag': set_tag,
              u't': set_tag,
              u'ефп': set_tag,
              u'е': set_tag,
-	     u'тег': set_tag,
-	     u'т': set_tag,
 	     u'v': add_vk,
-	     u'в': add_vk,
+	     u'м': add_vk,
 	     u'd': delete_pos,
+	     u'в': delete_pos,
 	     u'n' : set_next,
 	     u'next' : set_next,
+	     u'т' : set_next,
+	     u'туче' : set_next,
           }
 
 def main(bot, args):
@@ -242,7 +255,7 @@ list, ls, l [first] [last] — показывает список треков с
 se, search <query> — находит треки и выводит их с соответсвующими номерами (можно использовать для команды play)
 mi, mounts — выдаёт список занятых диджейских маунтов, чтобы было проще определить свободный
 t, tag <name> — установить название текущего трека в <name>
-v, в <song and artist name> — ищет вконтактике и добавляет указанную песню
+v <song and artist name> — ищет вконтактике и добавляет указанную песню
 d <number> — удаляет трек номер <number> (первые три защищены)
 n, next <number> — перемещает трек номер <number> в самый конец плейлиста
 '''

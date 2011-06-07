@@ -23,7 +23,7 @@ def main(bot, args):
 	except:
 		return
 
-	if rollback_from < 1 or rollback_to > 9 or rollback_to < rollback_from:
+	if rollback_from < 1 or rollback_to > 10 or rollback_to < rollback_from:
 		return
 	
         soup = BeautifulSoup(open(bot.settings["ans_file"], "r"))
