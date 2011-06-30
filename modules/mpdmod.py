@@ -38,9 +38,15 @@ def shuffle(client, *args):
     if msg:
         return msg
 
-    if len(args) > 0 and args[0] == 'off':
-        client.random(0)
-        return _("random was switched off.")
+    if len(args) > 0:
+        if args[0] == 'off':
+            client.random(0)
+            return _("random was switched off.")
+        if args[0] == 'on':
+            client.random(1)
+            return _("random was switched on.")
+        if args[0] == 'st':
+            return _("random is currently " + ("on" if client.status()["random"] == "1" else "off"))
     else:
         client.random(1)
         client.next()
@@ -144,6 +150,10 @@ def add_vk(client, *args):
     try:
         global globalbot
         global opener
+        aftercurrent = (args[0] == "!" and int(client.currentsong()["pos"]) > 1)
+        if args[0] == "!":
+            args = args[1:]
+
         req_args = urllib.urlencode({ "c[q]" : " ".join(args).encode('utf-8'), "c[section]" : "audio" })
         req = urllib2.Request("http://vkontakte.ru/search?" + req_args)
 
@@ -154,7 +164,11 @@ def add_vk(client, *args):
         if match:
             playtime = re.search(ur"<div class=\"duration fl_r\">([0-9:]+)</div>", result)
             id = client.addid(("http://127.0.0.1:8080/" + "+".join(args)).encode('utf-8'))
-	    position = int(client.status()['playlistlength']) - 1
+            if aftercurrent:
+                client.move(int(client.status()['playlistlength']) - 1, int(client.currentsong()["pos"]) + 1)
+	        position = int(client.currentsong()["pos"]) + 1
+            else:
+	        position = int(client.status()['playlistlength']) - 1
 	    title = re.search(ur"<b><a href=[^>]+>([^<]+)</a></b> - <span id=\"title[^\"]+\">([^<]+)</span>", result)
 	    if title:
 	        title = title.group(1) + u" — " + title.group(2)

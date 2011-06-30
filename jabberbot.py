@@ -340,7 +340,6 @@ class JabberBot:
     #}}}
 
     def checkReconnect(self): #{{{
-        return
         if self.conn:
             now = datetime.datetime.now()
             if (now - self.last).seconds > self.reconnectTime:
@@ -348,10 +347,10 @@ class JabberBot:
                     self.iq = None
                 self.last = now
                 self.conn.send(xmpp.protocol.Iq(to='jabber.ru', typ='get', queryNS=xmpp.NS_TIME))
-            else:
-                logging.warning('CONNECTION: reconnect (iq reply timeout)')
-                self.conn = None
-                self.iq = True
+        else:
+            logging.warning('CONNECTION: reconnect (iq reply timeout)')
+            self.conn = None
+            self.iq = True
     #}}}
 
 ###############################################

@@ -39,6 +39,7 @@ class VkHandler(BaseHTTPRequestHandler):
                 self.end_headers()
 	#tmpfile = open(dl_name, "wb")
 
+                print "Transfer started"
                 while True:
                     chunk = mp3_handle.read(128 * 1024)
                     if not chunk:
@@ -46,6 +47,7 @@ class VkHandler(BaseHTTPRequestHandler):
                     self.wfile.write(chunk)
 		    #tmpfile.write(chunk)
 
+                print "Transfer finished"
 		#tmpfile.close()
                 mp3_handle.close()
 		#tmpfile = open(dl_name, "rb")
@@ -81,6 +83,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 url = "http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc
 req = urllib2.Request(url)
 handle = opener.open(req)
+socket.setdefaulttimeout(15)
 
 server = ThreadedHTTPServer(('0.0.0.0', 8080), VkHandler)
 server.serve_forever()
