@@ -19,19 +19,26 @@ class VkHandler(BaseHTTPRequestHandler):
         global opener
 
         dl_name = os.tmpnam()
+        pathsplit = self.path[1:].split("/")
+        songtitle = pathsplit[0]
+        if len(pathsplit) > 1 and pathsplit[1].isdigit():
+            songshift = int(pathsplit[1])
+        else:
+            songshift = 1
+
         try:
             #result = handle.read().decode("cp1251")
 
-            req = urllib2.Request("http://vkontakte.ru/search?c%%5Bq%%5D=%s&c%%5Bsection%%5D=audio" % self.path[1:])
+            req = urllib2.Request("http://vkontakte.ru/search?c%%5Bq%%5D=%s&c%%5Bsection%%5D=audio" % songtitle)
 
             handle = opener.open(req)
             result = handle.read()
             handle.close()
             result = result.decode("cp1251", "ignore")
 
-            match = re.search(ur"value=\"(http:[^,]+),", result)
+            match = re.findall(ur"value=\"(http:[^,]+),", result)
             if match:
-                link = match.group(1)
+                link = match[songshift]
                 mp3_handle = urllib2.urlopen(link)
 	        self.send_response(200)
                 self.send_header('Content-Type', mp3_handle.headers['Content-Type'])

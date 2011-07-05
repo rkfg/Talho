@@ -2,3 +2,4 @@
 *.sqlite
 dict
 talho.py
+vkproxy_settings.py
