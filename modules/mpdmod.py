@@ -222,56 +222,73 @@ def last(client, *args):
     log.close()
     return "\n".join(tracks)
 
-commands = { u'shuffle' : shuffle,
-             u'sh' : shuffle,
-	     u'ыргааду': shuffle,
+commands = { u'sh' : shuffle,
+             u'shuffle' : shuffle,
 	     u'ыр': shuffle,
+	     u'ыргааду': shuffle,
+	     u'рандом': shuffle,
+	     u'хаос': shuffle,
              u'p': play,
              u'play': play,
 	     u'з': play,
 	     u'здфн': play,
-	     u'п': play,
-             u'list': track_list,
-             u'ls': track_list,
+	     u'играй': play,
+	     u'поставь': play,
              u'l': track_list,
-	     u'дшые': track_list,
-	     u'ды': track_list,
+             u'ls': track_list,
+             u'list': track_list,
 	     u'д': track_list,
+	     u'ды': track_list,
+	     u'дшые': track_list,
+	     u'покажи': track_list,
+	     u'список': track_list,
+             u's': track_search,
              u'se': track_search,
              u'search': track_search,
 	     u'ы': track_search,
              u'ыу': track_search,
              u'ыуфкср': track_search,
-             u'mounts': mounts_info,
+             u'ищи': track_search,
+             u'найди': track_search,
+             u'm': mounts_info,
              u'mi': mounts_info,
-             u'ьщгтеы': mounts_info,
+	     u'mounts': mounts_info,
+             u'ь': mounts_info,
              u'ьш': mounts_info,
-	     u'ь': mounts_info,
-             u'tag': set_tag,
+	     u'ьщгтеы': mounts_info,
+	     u'маунты': mounts_info,
              u't': set_tag,
-             u'ефп': set_tag,
+             u'tag': set_tag,
              u'е': set_tag,
+             u'ефп': set_tag,
+             u'назови': set_tag,
 	     u'v': add_vk,
 	     u'м': add_vk,
+	     u'запили': add_vk,
 	     u'd': delete_pos,
 	     u'в': delete_pos,
+	     u'выпили': delete_pos,
 	     u'n' : set_next,
 	     u'next' : set_next,
 	     u'т' : set_next,
 	     u'туче' : set_next,
+	     u'пни' : set_next,
           }
 
 def main(bot, args):
     '''Управление MPD. Команды:
-shuffle, sh — включает режим рандомного проигрывания и пускает следующий трек. С параметром off отключает рандом, что даёт возможность набивать треки в очередь и вести эфир из диджейки.
-play, p <number> — запускает проигрывание трека номер <number> (0 — маунт first, 1 — маунт second, 2 - запись помех, далее рандомные треки)
+shuffle, sh — включает режим рандомного проигрывания и пускает следующий трек.
+*  sh off — отключает рандом, что даёт возможность набивать треки в очередь.
+*  sh on — только включает рандом
+*  sh st — сообщает статус рандома
+play, p <number> — запускает проигрывание трека номер <number> (0 — маунт first, 1 — маунт second, далее рандомные треки)
 list, ls, l [first] [last] — показывает список треков с [first] по [last]
-se, search <query> — находит треки и выводит их с соответсвующими номерами (можно использовать для команды play)
-mi, mounts — выдаёт список занятых диджейских маунтов, чтобы было проще определить свободный
-t, tag <name> — установить название текущего трека в <name>
+search, se, s <query> — находит треки и выводит их с соответствующими номерами 
+mounts, mi, m — показывает состояние диджейских маунтов
+tag, t <name> — установить название текущего трека в <name>
 v <song and artist name> — ищет вконтактике и добавляет указанную песню
 d <number> — удаляет трек номер <number> (первые три защищены)
-n, next <number> — перемещает трек номер <number> в самый конец плейлиста
+next, n <number> — перемещает трек номер <number> в самый конец плейлиста
 '''
     global globalbot
     globalbot = bot

@@ -90,7 +90,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 url = "http://vkontakte.ru/login.php?email=%s&pass=%s" % vk_acc
 req = urllib2.Request(url)
 handle = opener.open(req)
-socket.setdefaulttimeout(15)
+socket.setdefaulttimeout(30)
 
 server = ThreadedHTTPServer(('0.0.0.0', 8080), VkHandler)
 server.serve_forever()

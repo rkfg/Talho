@@ -18,4 +18,4 @@ if __name__ == "__main__":
 	print main(None, "adfsdf.com")
 
 def info(bot):
-    return (("d", u"д"), 10, main)
+    return (("d", u"в"), 10, main)

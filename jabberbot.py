@@ -347,6 +347,8 @@ class JabberBot:
                     self.iq = None
                 self.last = now
                 self.conn.send(xmpp.protocol.Iq(to='jabber.ru', typ='get', queryNS=xmpp.NS_TIME))
+                for room in self.rooms:
+                    self._join_presence(self.conn, room)
         else:
             logging.warning('CONNECTION: reconnect (iq reply timeout)')
             self.conn = None
