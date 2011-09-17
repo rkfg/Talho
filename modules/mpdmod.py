@@ -42,13 +42,13 @@ def shuffle(client, *args):
         return msg
 
     if len(args) > 0:
-        if args[0] == 'off':
+        if args[0] == 'off' or args[0] == u'щаа':
             client.random(0)
             return _("random was switched off.")
-        if args[0] == 'on':
+        if args[0] == 'on' or args[0] == u'щт':
             client.random(1)
             return _("random was switched on.")
-        if args[0] == 'st':
+        if args[0] == 'st' or args[0] == u'ые':
             return _("random is currently " + ("on" if client.status()["random"] == "1" else "off"))
     else:
         client.random(1)
@@ -281,6 +281,18 @@ def last(client, *args):
     log.close()
     return "\n".join(tracks)
 
+def wtf(client, *args):
+    current_track = client.currentsong()
+    if "pos" in current_track:
+        if int(current_track["pos"]) < 2:
+            return _("DJ is on air, doing nothing.")
+
+        result = _("now playing track %s. %s (tags was set to keywords)") % (current_track["pos"], current_track["file"]) 
+        set_tag(client, *current_track["file"].replace("http://127.0.0.1:8080/", "").split("+"))
+    else:
+        result = _("playing nothing.")
+    return result
+
 commands = { u'sh': shuffle,
              u'shuffle': shuffle,
 	     u'ыр': shuffle,
@@ -335,7 +347,10 @@ commands = { u'sh': shuffle,
              u'dbk': del_by_keyword,
              u'вил': del_by_keyword,
              u'g': group,
-             u'п': group
+             u'п': group,
+             u'wtf': wtf,
+             u'цеа': wtf,
+             u'чобля': wtf,
           }
 
 def main(bot, args):
@@ -354,6 +369,7 @@ d <number> — удаляет трек номер <number> (первые три 
 dbk <words> — удаляет треки по ключевому слову(ам)
 next, n <number> — перемещает трек номер <number> в самый конец плейлиста
 g <words> — группирует треки по ключевому слову(ам) в конце плейлиста
+wtf — показывает текущий трек и заменяет теги на ключевые слова
 '''
     global globalbot
     globalbot = bot
