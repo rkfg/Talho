@@ -24,7 +24,7 @@ class VkHandler(BaseHTTPRequestHandler):
         if len(pathsplit) > 1 and pathsplit[1].isdigit():
             songshift = int(pathsplit[1])
         else:
-            songshift = 1
+            songshift = 0
 
         try:
             #result = handle.read().decode("cp1251")

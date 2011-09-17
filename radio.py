@@ -2,6 +2,7 @@
 
 import urllib
 from HTMLParser import HTMLParser
+from decoder import decoder
 
 wanted_streams = ['/radio', '/radio-low']
 html_ents = {'amp': '&', 'nbsp': ' ', 'lt': '<', 'gt': '>'}
@@ -91,7 +92,7 @@ def getRadioState(radiourl='http://127.0.0.1:8000'):
 		stm_main = parser.stm['/radio']
 		stm_low = parser.stm['/radio-low']
 
-		info = u'%s ⇐ %s' %(unicode(stm_main.title, 'utf-8'), unicode(stm_main.dj, 'utf-8'))
+		info = u'%s ⇐ %s' %(decoder(stm_main.title), decoder(stm_main.dj))
 		list = u'(%d+%d/%d+%d)' %(stm_main.current, stm_low.current, stm_main.peak, stm_low.peak)
 		return info, list
 	except:

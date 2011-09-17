@@ -15,8 +15,8 @@ class Markov():
         
         self.conn = sqlite3.connect(dbname)
         self.c = self.conn.cursor()
-        self.c.execute('CREATE TABLE IF NOT EXISTS words(word1 text, word2 text, word3 text)')
-        self.c.execute('CREATE INDEX IF NOT EXISTS mainindex on words(word1, word2, word3)')
+        self.c.execute('CREATE TABLE IF NOT EXISTS words(word1 text, word2 text, word3 text, final bool)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS mainindex on words(word1, word2, word3, final)')
         self.tablesize = self.c.execute("SELECT COUNT(*) FROM words").fetchone()[0]
 
     def fill_db(self, infile):
@@ -32,10 +32,11 @@ class Markov():
         """Returns string of required words count"""
 
         if length == 1:
-            words = self.c.execute("SELECT word1, word2, word3 FROM words WHERE word3 LIKE '%.' OR word3 LIKE '%?' OR word3 LIKE '%!' ORDER BY RANDOM() LIMIT 1").fetchone()
+            words = self.c.execute("SELECT word1, word2, word3 FROM words WHERE final=1 ORDER BY RANDOM() LIMIT 1").fetchone()
             return ' '.join(words)
             
         words = self.c.execute("SELECT word1, word2, word3 FROM words LIMIT 1 OFFSET ?", (random.randint(0, self.tablesize - 1),)).fetchone()
+        #words = self.c.execute("SELECT word1, word2, word3 FROM words ORDER BY RANDOM() LIMIT 1").fetchone()
         result = ' '.join(words)
         for i in xrange(length):
             if not words[2]:
@@ -43,7 +44,7 @@ class Markov():
             if i != length - 1:
                 words = self.c.execute("SELECT word1, word2, word3 FROM words WHERE word1=? ORDER BY RANDOM() LIMIT 1", (words[2],)).fetchone()
             else:
-                words = self.c.execute("SELECT word1, word2, word3 FROM words WHERE word1=? AND (word3 LIKE '%.' OR word3 LIKE '%!' OR word3 LIKE '%?') ORDER BY RANDOM() LIMIT 1", (words[2],)).fetchone()
+                words = self.c.execute("SELECT word1, word2, word3 FROM words WHERE word1=? AND final=1 ORDER BY RANDOM() LIMIT 1", (words[2],)).fetchone()
             if not words:
                 break
             result += ' ' + ' '.join(words[1:])
@@ -60,7 +61,7 @@ class Markov():
         for i in xrange(len(words) - 2):
             exists = self.c.execute("SELECT * FROM words WHERE word1=? AND word2=? AND word3=?", (words[i], words[i + 1], words[i + 2])).fetchone()
             if not exists:
-                self.c.execute("INSERT INTO words (word1, word2, word3) VALUES (?, ?, ?)", (words[i], words[i + 1], words[i + 2]))
+                self.c.execute("INSERT INTO words (word1, word2, word3, final) VALUES (?, ?, ?, ?)", (words[i], words[i + 1], words[i + 2], i == len(words) - 3))
                 self.tablesize += 1
         self.conn.commit()
 

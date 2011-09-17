@@ -10,6 +10,9 @@ import re
 import datetime
 import time
 import HTMLParser
+import traceback
+import sys
+from decoder import decoder
 
 from misc import _
 
@@ -67,22 +70,35 @@ def play(client, *args):
         return _("track #%s started.") % args[0]
     except (ValueError, TypeError):
         return _("unknown fucking shit happened.")
-    
+
 def fancy_tracks(tracks):
     result = "\n"
     if not tracks:
         return _("nothing found.")
-    for track in tracks:
+    try:
+      for track in tracks:
         result += track["pos"] + ". "
         title = ""
         if "title" in track:
             title = track["title"]
+            if isinstance(title, list):
+                title = " ".join(title)
+
+            title = decoder(title)
+
             if "artist" in track:
-                title = track["artist"] + " — " + title
+                artist = track["artist"]
+                if isinstance(artist, list):
+                    artist = " ".join(artist)
+                artist = decoder(artist)
+
+                title = artist + u" — " + title
         else:
-            title = track["file"]
+            title = track["file"].decode("utf-8")
             
-        result += title + "\n"
+        result += title + u"\n"
+    except:
+        print str("".join(traceback.format_exception(*sys.exc_info())))
     return result
     
 def track_list(client, *args):
@@ -310,7 +326,7 @@ next, n <number> — перемещает трек номер <number> в сам
             try:
                 result = commands[cmd](client, *args[1:])
 	    except mpd.CommandError:
-	        result = "Случилась неведомая ошибка во время выполнения команды."
+	        result = _("unknown shit happend")
 	else:
 	    result = _("unknown command")
     else:
@@ -318,7 +334,7 @@ next, n <number> — перемещает трек номер <number> в сам
         if "pos" in current_track:
             result = _("now playing track #%s") % current_track["pos"].decode("utf-8")
         else:
-            result = "ничего не проигрывается."
+            result = _("playing nothing.")
     client.disconnect()
     return result
 
