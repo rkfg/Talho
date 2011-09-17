@@ -287,8 +287,8 @@ def wtf(client, *args):
         if int(current_track["pos"]) < 2:
             return _("DJ is on air, doing nothing.")
 
-        result = _("now playing track %s. %s (tags were set to keywords)") % (current_track["pos"], current_track["file"]) 
-        set_tag(client, *current_track["file"].replace("http://127.0.0.1:8080/", "").split("+"))
+        result = _("now playing track %s. %s (tags were set to keywords)") % (current_track["pos"], current_track["file"].decode("utf-8")) 
+        set_tag(client, *current_track["file"].decode("utf-8").replace("http://127.0.0.1:8080/", "").split("+"))
     else:
         result = _("playing nothing.")
     return result
@@ -346,11 +346,17 @@ commands = { u'sh': shuffle,
 	     u'пни': set_next,
              u'dbk': del_by_keyword,
              u'вил': del_by_keyword,
+             u'забудь': del_by_keyword,
+             u'выжги': del_by_keyword,
              u'g': group,
              u'п': group,
+             u'собери': group,
+             u'приготовь': group,
              u'wtf': wtf,
              u'цеа': wtf,
              u'чобля': wtf,
+             u'расскажи': wtf,
+             u'чтоза': wtf,
           }
 
 def main(bot, args):
