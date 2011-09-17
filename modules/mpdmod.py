@@ -133,6 +133,12 @@ def del_by_keyword(client, *args):
         return _("minimum 4 letters allowed")
 
     tracks = client.playlistsearch("any", name.encode('utf-8'))
+    if not len(tracks):
+        return _("nothing found.")
+
+    trackstr = fancy_tracks(tracks)
+    if len(trackstr) > 1000:
+        trackstr = trackstr[:1000] + "..."
     cnt = 0
     for t in reversed(tracks):
         p = int(t["pos"])
@@ -140,7 +146,7 @@ def del_by_keyword(client, *args):
             client.delete(p)
             cnt += 1
 
-    return _("%d tracks deleted.") % cnt
+    return _("%d tracks deleted:%s") % (cnt, trackstr)
 
 def group(client, *args):
     name = " ".join(args)
@@ -148,6 +154,12 @@ def group(client, *args):
         return _("minimum 4 letters allowed")
 
     tracks = client.playlistsearch("any", name.encode('utf-8'))
+    if not len(tracks):
+        return _("nothing found.")
+
+    trackstr = fancy_tracks(tracks)
+    if len(trackstr) > 1000:
+        trackstr = trackstr[:1000] + "..."
     cnt = 0
     to = int(client.status()['playlistlength']) - 1
     for t in reversed(tracks):
@@ -156,7 +168,7 @@ def group(client, *args):
             client.move(p, to)
             cnt += 1
 
-    return _("%d tracks grouped at the end of playlist.") % cnt
+    return _("%d tracks grouped at the end of playlist:%s") % (cnt, trackstr)
 
 def mounts_info(client, *args):
     try:
