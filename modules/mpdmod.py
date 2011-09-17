@@ -137,10 +137,26 @@ def del_by_keyword(client, *args):
     for t in reversed(tracks):
         p = int(t["pos"])
         if p > 2:
-            client.delete(t["pos"])
+            client.delete(p)
             cnt += 1
 
     return _("%d tracks deleted.") % cnt
+
+def group(client, *args):
+    name = " ".join(args)
+    if len(name) < 4:
+        return _("minimum 4 letters allowed")
+
+    tracks = client.playlistsearch("any", name.encode('utf-8'))
+    cnt = 0
+    to = int(client.status()['playlistlength']) - 1
+    for t in reversed(tracks):
+        p = int(t["pos"])
+        if p > 2:
+            client.move(p, to)
+            cnt += 1
+
+    return _("%d tracks grouped at the end of playlist.") % cnt
 
 def mounts_info(client, *args):
     try:
@@ -253,8 +269,8 @@ def last(client, *args):
     log.close()
     return "\n".join(tracks)
 
-commands = { u'sh' : shuffle,
-             u'shuffle' : shuffle,
+commands = { u'sh': shuffle,
+             u'shuffle': shuffle,
 	     u'ыр': shuffle,
 	     u'ыргааду': shuffle,
 	     u'рандом': shuffle,
@@ -299,13 +315,15 @@ commands = { u'sh' : shuffle,
 	     u'd': delete_pos,
 	     u'в': delete_pos,
 	     u'выпили': delete_pos,
-	     u'n' : set_next,
-	     u'next' : set_next,
-	     u'т' : set_next,
-	     u'туче' : set_next,
-	     u'пни' : set_next,
-             u'dbk' : del_by_keyword,
-             u'вил' : del_by_keyword
+	     u'n': set_next,
+	     u'next': set_next,
+	     u'т': set_next,
+	     u'туче': set_next,
+	     u'пни': set_next,
+             u'dbk': del_by_keyword,
+             u'вил': del_by_keyword,
+             u'g': group,
+             u'п': group
           }
 
 def main(bot, args):
@@ -323,6 +341,7 @@ v <song and artist name> — ищет вконтактике и добавляе
 d <number> — удаляет трек номер <number> (первые три защищены)
 dbk <words> — удаляет треки по ключевому слову(ам)
 next, n <number> — перемещает трек номер <number> в самый конец плейлиста
+g <words> — группирует треки по ключевому слову(ам) в конце плейлиста
 '''
     global globalbot
     globalbot = bot
