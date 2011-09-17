@@ -127,6 +127,21 @@ def track_search(client, *args):
     result = client.playlistsearch("any", (" ".join(args)).encode('utf-8'))[:20]
     return fancy_tracks(result)
 
+def del_by_keyword(client, *args):
+    name = " ".join(args)
+    if len(name) < 4:
+        return _("minimum 4 letters allowed")
+
+    tracks = client.playlistsearch("any", name.encode('utf-8'))
+    cnt = 0
+    for t in reversed(tracks):
+        p = int(t["pos"])
+        if p > 2:
+            client.delete(t["pos"])
+            cnt += 1
+
+    return _("%d tracks deleted.") % cnt
+
 def mounts_info(client, *args):
     try:
         result = "\n"
@@ -289,6 +304,8 @@ commands = { u'sh' : shuffle,
 	     u'т' : set_next,
 	     u'туче' : set_next,
 	     u'пни' : set_next,
+             u'dbk' : del_by_keyword,
+             u'вил' : del_by_keyword
           }
 
 def main(bot, args):
@@ -304,6 +321,7 @@ mounts, mi, m — показывает состояние диджейских �
 tag, t <name> — установить название текущего трека в <name>
 v <song and artist name> — ищет вконтактике и добавляет указанную песню
 d <number> — удаляет трек номер <number> (первые три защищены)
+dbk <words> — удаляет треки по ключевому слову(ам)
 next, n <number> — перемещает трек номер <number> в самый конец плейлиста
 '''
     global globalbot
