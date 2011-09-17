@@ -79,22 +79,22 @@ def fancy_tracks(tracks):
       for track in tracks:
         result += track["pos"] + ". "
         title = ""
-        if "title" in track:
-            title = track["title"]
-            if isinstance(title, list):
-                title = " ".join(title)
+        #if "title" in track:
+        #    title = track["title"]
+        #    if isinstance(title, list):
+        #        title = " ".join(title)
 
-            title = decoder(title)
+        #    title = decoder(title)
 
-            if "artist" in track:
-                artist = track["artist"]
-                if isinstance(artist, list):
-                    artist = " ".join(artist)
-                artist = decoder(artist)
+        #    if "artist" in track:
+        #        artist = track["artist"]
+        #        if isinstance(artist, list):
+        #            artist = " ".join(artist)
+        #        artist = decoder(artist)
 
-                title = artist + u" — " + title
-        else:
-            title = track["file"].decode("utf-8")
+        #        title = artist + u" — " + title
+        #else:
+        title = track["file"].decode("utf-8")
             
         result += title + u"\n"
     except:
