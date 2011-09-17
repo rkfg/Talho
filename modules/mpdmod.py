@@ -287,7 +287,7 @@ def wtf(client, *args):
         if int(current_track["pos"]) < 2:
             return _("DJ is on air, doing nothing.")
 
-        result = _("now playing track %s. %s (tags was set to keywords)") % (current_track["pos"], current_track["file"]) 
+        result = _("now playing track %s. %s (tags were set to keywords)") % (current_track["pos"], current_track["file"]) 
         set_tag(client, *current_track["file"].replace("http://127.0.0.1:8080/", "").split("+"))
     else:
         result = _("playing nothing.")
