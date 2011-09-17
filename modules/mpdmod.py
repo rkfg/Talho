@@ -94,7 +94,7 @@ def fancy_tracks(tracks):
 
         #        title = artist + u" — " + title
         #else:
-        title = track["file"].decode("utf-8")
+        title = track["file"].decode("utf-8").replace("127.0.0.1", "radioanon.ru")
             
         result += title + u"\n"
     except:
