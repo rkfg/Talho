@@ -9,15 +9,29 @@ import traceback
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 import socket
-from vkproxy_settings import vk_acc
+from vkproxy_settings import vk_acc, icecast_admin
 
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+
+class IcecastAdminOpener(urllib.FancyURLopener):
+    def prompt_user_passwd(self, host, realm):
+        return icecast_admin
+
+def set_tag(args):
+    if not args:
+        return
+    try:
+        song_name = " ".join(args)[:100]
+        metadata_opener = IcecastAdminOpener()
+        update_query = urllib.urlencode({ "mount" : "/radio", "mode" : "updinfo", "song" : song_name })
+        metadata_opener.open("http://127.0.0.1:8000/admin/metadata?" + update_query).read()
+    except:
+        pass
 
 class VkHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         global opener
-
         dl_name = os.tmpnam()
         pathsplit = self.path[1:].split("/")
         songtitle = pathsplit[0]
@@ -28,7 +42,6 @@ class VkHandler(BaseHTTPRequestHandler):
 
         try:
             #result = handle.read().decode("cp1251")
-
             req = urllib2.Request("http://vkontakte.ru/search?c%%5Bq%%5D=%s&c%%5Bsection%%5D=audio" % songtitle)
 
             handle = opener.open(req)
@@ -47,6 +60,8 @@ class VkHandler(BaseHTTPRequestHandler):
 	#tmpfile = open(dl_name, "wb")
 
                 print "Transfer started"
+                if self.client_address[0] == "127.0.0.1":
+                    set_tag(songtitle.split("+"))
                 while True:
                     chunk = mp3_handle.read(128 * 1024)
                     if not chunk:
