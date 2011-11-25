@@ -136,6 +136,9 @@ def del_by_keyword(client, *args):
     if not len(tracks):
         return _("nothing found.")
 
+    if len(tracks) > int(client.status()['playlistlength']) * 5 / 10:
+        return _("too much to delete, refusing.")
+
     trackstr = fancy_tracks(tracks)
     if len(trackstr) > 1000:
         trackstr = trackstr[:1000] + "..."

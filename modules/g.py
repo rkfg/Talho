@@ -65,6 +65,7 @@ def google(query, bot):
 
     	text = re.sub('<b>|</b>', '', text)
     	text = re.sub('   ', '\n', text)
+	text = text.replace(u'\ufeff', '')
 
     	return text
     except:
