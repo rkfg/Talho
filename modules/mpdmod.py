@@ -224,14 +224,14 @@ def add_vk(client, *args):
 
         match = re.search(ur"value=\"(http:[^,]+),", result)
         if match:
-            playtime = re.search(ur"<div class=\"duration fl_r\">([0-9:]+)</div>", result)
+            playtime = re.search(ur"<div class=\"duration fl_r\" [^>]*>([0-9:]+)</div>", result)
             id = client.addid(("http://127.0.0.1:8080/" + "+".join(args)).encode('utf-8'))
             if aftercurrent:
                 client.move(int(client.status()['playlistlength']) - 1, int(client.currentsong()["pos"]) + 1)
 	        position = int(client.currentsong()["pos"]) + 1
             else:
 	        position = int(client.status()['playlistlength']) - 1
-	    title = re.search(ur"<b><a href=[^>]+>([^<]+)</a></b> - <span id=\"title[^\"]+\">([^<]+)</span>", result)
+	    title = re.search(ur"<b><a href=[^>]+><span [^>]+>([^<]+)</span></a></b> - <span id=\"title[^\"]+\"><a [^>]+><span [^>]+>([^<]+)</span>", result)
 	    if title:
 	        title = title.group(1) + u" — " + title.group(2)
             else:
@@ -295,6 +295,30 @@ def wtf(client, *args):
     else:
         result = _("playing nothing.")
     return result
+
+def seek(client, *args):
+    current_track = client.currentsong()
+    if not "time" in current_track:
+        return _("can't seek.")
+
+    if len(args) > 1:
+        return
+    args = args[0]
+    HMS = re.match(r'(\d+):(\d+):(\d+)', args)
+    if HMS and int(HMS.group(2)) < 60 and int(HMS.group(3)) < 60:
+        time = int(HMS.group(3)) + int(HMS.group(2)) * 60 + int(HMS.group(1)) * 3600
+    else:
+        MS = re.match(r'(\d+):(\d+)', args)
+        if MS and int(MS.group(1)) < 60 and int(MS.group(2)) < 60:
+            time = int(MS.group(2)) + int(MS.group(1)) * 60
+        else:
+            if args.isdigit():
+                time = int(args)
+            else:
+                return
+
+    client.seekid(current_track["id"], time)
+    return _("moving to %d/%s seconds.") % (time, current_track["time"])
 
 commands = { u'sh': shuffle,
              u'shuffle': shuffle,
@@ -360,6 +384,10 @@ commands = { u'sh': shuffle,
              u'чобля': wtf,
              u'расскажи': wtf,
              u'чтоза': wtf,
+             u'seek': seek,
+             u'ыуул': seek,
+             u'sk': seek,
+             u'ыл': seek
           }
 
 def main(bot, args):
@@ -379,6 +407,7 @@ dbk <words> — удаляет треки по ключевому слову(а�
 next, n <number> — перемещает трек номер <number> в самый конец плейлиста
 g <words> — группирует треки по ключевому слову(ам) в конце плейлиста
 wtf — показывает текущий трек и заменяет теги на ключевые слова
+seek, sk [HH:][MM:]SS — перемотать на HH часов, MM минут, SS секунд
 '''
     global globalbot
     globalbot = bot
@@ -406,7 +435,8 @@ wtf — показывает текущий трек и заменяет тег�
     else:
         current_track = client.currentsong()
         if "pos" in current_track:
-            result = _("now playing track #%s") % current_track["pos"].decode("utf-8")
+            status = client.status()
+            result = _("now playing track #%s @ %s seconds") % (current_track["pos"].decode("utf-8"), status["time"] if "time" in status else "???")
         else:
             result = _("playing nothing.")
     client.disconnect()

@@ -21,7 +21,7 @@ class MyUDHandler(SocketServer.BaseRequestHandler):
 	if data[5:17] in botglobal.blacklist:
 		return
         
-	botglobal.send("jabrach@conference.jabber.ru", "groupchat", data, "<html xmlns='http://jabber.org/protocol/xhtml-im'> <body xmlns='http://www.w3.org/1999/xhtml'> <span style='font-family: Comic Sans MS; font-weight: bold;'><br/>=== SITE MESSAGE ===<br/>%s<br/>=== CUT HERE ===<br/></span></body></html>" % cgi.escape(data))
+	botglobal.send("jabrach@conference.radioanon.ru", "groupchat", data, "<html xmlns='http://jabber.org/protocol/xhtml-im'> <body xmlns='http://www.w3.org/1999/xhtml'> <span style='font-family: Comic Sans MS; font-weight: bold;'><br/>=== SITE MESSAGE ===<br/>%s<br/>=== CUT HERE ===<br/></span></body></html>" % cgi.escape(data))
 
 class ThreadedUnixDatagramServer(SocketServer.ThreadingMixIn, SocketServer.UnixDatagramServer):
     pass

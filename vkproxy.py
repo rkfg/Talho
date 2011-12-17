@@ -60,8 +60,8 @@ class VkHandler(BaseHTTPRequestHandler):
 	#tmpfile = open(dl_name, "wb")
 
                 print "Transfer started"
-                if self.client_address[0] == "127.0.0.1":
-                    set_tag(songtitle.split("+"))
+                #if self.client_address[0] == "127.0.0.1":
+                #    set_tag(songtitle.split("+"))
                 while True:
                     chunk = mp3_handle.read(128 * 1024)
                     if not chunk:

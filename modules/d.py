@@ -8,7 +8,7 @@ def main(bot, args):
 	if not args:
 		return
 	try:
-            link = urllib2.urlopen(urllib2.Request("http://downforeveryoneorjustme.com/" + args[0].encode("idna")), timeout = 20)
+            link = urllib2.urlopen(urllib2.Request("http://isup.me/" + args[0].encode("idna")), timeout = 20)
 	    downfor = link.read()
 	    return u"сайт " + args[0] + (u" в дауне" if "It's not just you!" in downfor else u" работает" if "It's just you" in downfor else u" не сайт вообще")
 	except urllib2.URLError:
